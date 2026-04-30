@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    
+    <!-- Performance optimizations -->
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Reference shared data library -->
+    <ProjectReference Include="..\VexTrainer.Data\VexTrainer.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Cookie Authentication -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+    
+    <!-- Email sending -->
+    <PackageReference Include="MailKit" Version="4.3.0" />
+    
+    <!-- Markdown rendering -->
+    <PackageReference Include="Markdig" Version="0.34.0" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.3" />
+  </ItemGroup>
+
+</Project>
