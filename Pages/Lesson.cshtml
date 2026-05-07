@@ -1,0 +1,122 @@
+@page "/Lesson/{fileName}"
+@model VexTrainerWeb.Pages.LessonModel
+@{
+    ViewData["Title"] = Model.TopicTitle;
+    Layout = "_Layout";
+}
+
+@* Antiforgery token for AJAX POST requests *@
+@Html.AntiForgeryToken()
+
+@if (Model.ErrorMessage != null)
+{
+    <div class="page-header">
+        <h1>Error</h1>
+    </div>
+    <div class="container">
+        <div class="alert alert-error">
+            @Model.ErrorMessage
+        </div>
+        <a href="/Lessons" class="btn btn-primary">← Back to Lessons</a>
+    </div>
+}
+else
+{
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <a href="/Lessons">All Modules</a>
+        <span>›</span>
+        <a href="/Lessons#module-@Model.ModuleId">@Model.ModuleName</a>
+        <span>›</span>
+        <a href="/Lessons#lesson-@Model.LessonId">@Model.LessonTitle</a>
+        @if (!string.IsNullOrEmpty(Model.ParentTopicTitle))
+        {
+            <span>›</span>
+            <span>@Model.ParentTopicTitle</span>
+        }
+    </nav>
+
+    <!-- Lesson Viewer -->
+    <div class="lesson-viewer">
+        <!-- Markdown Content -->
+        <div id="lessonContent" class="lesson-content">
+            <div class="loading">Loading topic...</div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="lesson-navigation">
+            @if (Model.PreviousTopic != null)
+            {
+                <a href="/Lesson/@Model.PreviousTopic.FileName" class="nav-btn prev">
+                    <span class="nav-arrow">←</span>
+                    <span class="nav-text">
+                        <span class="nav-label">Previous</span>
+                        <span class="nav-title">@Model.PreviousTopic.TopicTitle</span>
+                    </span>
+                </a>
+            }
+            else
+            {
+                <div class="nav-btn-spacer"></div>
+            }
+
+            <button id="markCompleteBtn" class="btn btn-success">
+                Mark as Complete
+            </button>
+
+            @if (Model.NextTopic != null)
+            {
+                <a href="/Lesson/@Model.NextTopic.FileName" class="nav-btn next">
+                    <span class="nav-text">
+                        <span class="nav-label">Next</span>
+                        <span class="nav-title">@Model.NextTopic.TopicTitle</span>
+                    </span>
+                    <span class="nav-arrow">→</span>
+                </a>
+            }
+            else
+            {
+                <div class="nav-btn-spacer"></div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Markdown parser -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- Prism.js - CORE ONLY (no plugins, we have custom line numbers & copy button!) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+
+<!-- Language components -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+<script>
+// Wait for DOM and ensure VexTrainer is loaded
+(function() {
+    function initLesson() {
+        if (typeof VexTrainer !== 'undefined' && VexTrainer.LessonContent) {
+            VexTrainer.LessonContent.init(
+                '@Model.FileName',
+                @Model.TopicId,
+                @(Model.NextTopic != null ? "true" : "false"),
+                '@(Model.NextTopic != null ? $"/Lesson/{Model.NextTopic.FileName}" : "")'
+            );
+        } else {
+            console.error('VexTrainer not loaded yet, retrying...');
+            setTimeout(initLesson, 100);
+        }
+    }
+    
+    // Try to init when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLesson);
+    } else {
+        initLesson();
+    }
+})();
+</script>

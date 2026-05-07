@@ -1,0 +1,73 @@
+@{
+    var isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var userName = User.Identity?.Name ?? "";
+    var currentPage = ViewData["Title"]?.ToString() ?? "";
+}
+
+<header class="site-header">
+    <div class="header-container">
+        <div class="header-left">
+            @if (isAuthenticated)
+            {
+                <span class="page-title">@currentPage</span>
+            }
+        </div>
+        
+        <div class="header-center">
+            <a href="/" class="logo">
+                <span class="logo-icon">🤖</span>
+                <span class="logo-text">VexTrainer</span>
+            </a>
+        </div>
+        
+        <div class="header-right">
+            @if (isAuthenticated)
+            {
+                <div class="user-menu">
+                    <button class="user-button" onclick="toggleUserMenu()">
+                        <span class="user-icon">👤</span>
+                        <span class="user-name">@userName</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown">
+                        <a href="/Profile" class="dropdown-item">Profile</a>
+                        <a href="/Dashboard" class="dropdown-item">Dashboard</a>
+                        <a href="/Lessons" class="dropdown-item">Lessons</a>
+                        <hr class="dropdown-divider" />
+                        <form method="post" action="/Auth/SignOut" class="dropdown-form">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="dropdown-item signout-button">Sign Out</button>
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <a href="/Auth/SignIn" class="btn-signin">Sign In</a>
+            }
+        </div>
+    </div>
+    
+    <!-- Message notifications -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="alert-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-error" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="alert-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+    }
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="alert alert-info" role="alert">
+            @TempData["InfoMessage"]
+            <button type="button" class="alert-close" onclick="this.parentElement.remove()">×</button>
+        </div>
+    }
+</header>

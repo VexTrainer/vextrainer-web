@@ -1,0 +1,866 @@
+@page
+@model VexTrainerWeb.Pages.DonateModel
+@{
+    ViewData["Title"] = "Help Save Farmers' Lives";
+    Layout = "_Layout";
+}
+
+<div class="page-header">
+    <h1>Help Save Farmers' Lives in India</h1>
+    <p class="subtitle">Your donation can prevent farmer suicides and transform rural communities</p>
+</div>
+
+<div class="container" style="max-width: 900px;">
+    <!-- Crisis Overview -->
+    <div class="crisis-box">
+        <h2>A Silent Crisis: 48 Farmers Take Their Lives Every Day</h2>
+        <p>
+            In India, a devastating crisis unfolds quietly in rural communities. From 1995 to 2018, 
+            nearly <strong>400,000 farmers have died by suicide</strong> — that's approximately 
+            <strong>48 farmers every single day</strong>. In 2022 alone, 11,290 farmers and 
+            agricultural workers took their own lives.
+        </p>
+        <p>
+            The farmer suicide rate in India is <strong>47% higher than the national average</strong>. 
+            This isn't just statistics — these are fathers, mothers, and breadwinners leaving behind 
+            devastated families and communities.
+        </p>
+    </div>
+
+    <!-- Why This Happens -->
+    <div class="content-section">
+        <h2>Why Are Farmers Taking Their Lives?</h2>
+        <p>
+            Research shows the main causes are economic, not mental health issues. Farmers face 
+            an overwhelming combination of challenges:
+        </p>
+        
+        <div class="causes-grid">
+            <div class="cause-card">
+                <div class="cause-header">
+                    <div class="icon">💸</div>
+                    <h3>Crushing Debt</h3>
+                </div>
+                <p>86-98% of farmers who died by suicide were in debt. Rising costs of seeds, fertilizers, 
+                and pesticides force farmers to borrow from private lenders at high interest rates.</p>
+            </div>
+            
+            <div class="cause-card">
+                <div class="cause-header">
+                    <div class="icon">🌾</div>
+                    <h3>Crop Failures</h3>
+                </div>
+                <p>Droughts, floods, and unpredictable weather destroy harvests. Climate change has 
+                increased rainfall deficits, leading to more crop losses and mounting financial pressure.</p>
+            </div>
+            
+            <div class="cause-card">
+                <div class="cause-header">
+                    <div class="icon">📉</div>
+                    <h3>Low Market Prices</h3>
+                </div>
+                <p>Even when crops succeed, farmers face price fluctuations and lack information when 
+                planning their crops or taking loans for inputs.</p>
+            </div>
+            
+            <div class="cause-card">
+                <div class="cause-header">
+                    <div class="icon">💧</div>
+                    <h3>Water Crisis</h3>
+                </div>
+                <p>Lack of irrigation and water scarcity in regions like Maharashtra and Karnataka make 
+                farming increasingly difficult and unprofitable.</p>
+            </div>
+
+            <div class="cause-card">
+                <div class="cause-header">
+                    <div class="icon">🏚️</div>
+                    <h3>No Storage Facilities</h3>
+                </div>
+                <p>Lack of warehouses and godowns forces farmers to sell immediately after harvest at 
+                whatever price is offered, unable to wait for better rates.</p>
+            </div>
+
+            <div class="cause-card">
+                <div class="cause-header">
+                    <div class="icon">⚠️</div>
+                    <h3>Adulterated Inputs</h3>
+                </div>
+                <p>Fake or adulterated seeds and pesticides lead to crop failures despite farmers' 
+                investment, leaving them with debt and no harvest.</p>
+            </div>
+        </div>
+
+        <div class="climate-impact">
+            <p><strong>Climate Change Impact:</strong> Research shows that during years with 25% rainfall 
+            deficit, farmer suicides increase from 810 to 1,188 annually. Small and marginal farmers 
+            with less than one hectare of land are at highest risk.</p>
+        </div>
+    </div>
+
+    <!-- What Help Looks Like -->
+    <div class="content-section">
+        <h2>How Your Donation Helps</h2>
+        <p>
+            Evidence-based interventions have proven effective at preventing farmer suicides. 
+            Studies show that when farmers have access to support programs, suicide rates drop dramatically:
+        </p>
+
+        <div class="impact-stat">
+            <div class="stat-number">78%</div>
+            <div class="stat-text">reduction in suicides when farmers access social protection programs</div>
+        </div>
+
+        <p style="margin-bottom: 25px;"><strong>Your donation supports:</strong></p>
+        
+        <div class="help-grid">
+            <div class="help-card">
+                <div class="help-header">
+                    <div class="help-icon">🌱</div>
+                    <h3>Debt Relief</h3>
+                </div>
+                <p>Emergency assistance for farmers facing insurmountable debt</p>
+            </div>
+
+            <div class="help-card">
+                <div class="help-header">
+                    <div class="help-icon">💧</div>
+                    <h3>Irrigation</h3>
+                </div>
+                <p>Water infrastructure and drought-resistant crops</p>
+            </div>
+
+            <div class="help-card">
+                <div class="help-header">
+                    <div class="help-icon">📚</div>
+                    <h3>Education</h3>
+                </div>
+                <p>Training on government programs and financial management</p>
+            </div>
+
+            <div class="help-card">
+                <div class="help-header">
+                    <div class="help-icon">🤝</div>
+                    <h3>Support Networks</h3>
+                </div>
+                <p>Peer groups and mental health resources</p>
+            </div>
+
+            <div class="help-card">
+                <div class="help-header">
+                    <div class="help-icon">🛡️</div>
+                    <h3>Insurance & Markets</h3>
+                </div>
+                <p>Crop insurance and better market access</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Every Amount Matters -->
+    <div class="content-section">
+        <h2>Every Amount Makes a Difference</h2>
+        <p>
+            You don't need to donate a large sum to save lives. Even small contributions add up to 
+            create real change.
+        </p>
+
+        <div class="small-amounts-box">
+            <h3>Think about it this way:</h3>
+            <ul>
+                <li><strong>The cost of a boba tea ($7)</strong> can provide emergency food assistance for a farming family for one day</li>
+                <li><strong>A lunch out ($15)</strong> can help a farmer access crop insurance information</li>
+                <li><strong>A movie ticket ($20)</strong> can fund mental health counseling for a distressed farmer</li>
+                <li><strong>A new shirt ($40)</strong> can contribute to irrigation infrastructure for a small farm</li>
+            </ul>
+            <p class="emphasis">
+                <strong>Even $5 helps.</strong> When thousands of people contribute what they can, we create 
+                a safety net that saves lives.
+            </p>
+        </div>
+    </div>
+
+    <!-- States Affected -->
+    <div class="content-section">
+        <h2>Where Your Help Is Needed Most</h2>
+        <p>
+            Seven states account for nearly 88% of farmer suicides: <strong>Maharashtra, Karnataka, 
+            Telangana, Andhra Pradesh, Madhya Pradesh, Tamil Nadu, and Chhattisgarh</strong>. Maharashtra 
+            alone has recorded over 60,000 farmer deaths since 1995.
+        </p>
+        <p>
+            These are regions facing severe water scarcity, unpredictable monsoons, and limited access 
+            to government support programs. Your donation reaches farmers in these high-risk areas.
+        </p>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="donate-cta-box">
+        <h2>Help Save a Farmer's Life Today</h2>
+        <p>
+            Behind every statistic is a family — children who need their parents, communities that need 
+            their farmers. Your donation provides hope, resources, and a lifeline to those who feed us.
+        </p>
+        
+        <div class="donate-button-container">
+            <a href="https://farmers.aidindia.org/save-farmers" class="btn-donate-large" target="_blank" rel="noopener">
+                <span class="donate-text">Donate Now</span>
+                <span class="donate-subtext">Every contribution saves lives</span>
+            </a>
+        </div>
+
+        <p class="tax-note">
+            Donations are processed securely through AID India. Your contribution directly supports 
+            farmers and their families in crisis.
+        </p>
+    </div>
+
+    <!-- Why This Matters -->
+    <div class="content-section">
+        <h2>Why This Cause Matters to VexTrainer</h2>
+        <p>
+            VexTrainer exists to make education accessible to all. Many of our users come from families 
+            in India, including farming communities. We believe in giving back to the communities that 
+            have supported us.
+        </p>
+        <p>
+            While we provide free robotics education, we also recognize our responsibility to support 
+            urgent humanitarian needs. Preventing farmer suicides saves families, preserves communities, 
+            and protects India's agricultural foundation.
+        </p>
+    </div>
+
+    <!-- Research Sources -->
+    <div class="sources-section">
+        <h3>Learn More About This Crisis</h3>
+        <p class="sources-note">
+            The statistics and information on this page come from peer-reviewed research, government 
+            data (National Crime Records Bureau), and reports from international organizations including 
+            the International Institute for Environment and Development, Oxford Human Rights Hub, and 
+            academic journals.
+        </p>
+        <p>
+            Key sources: National Crime Records Bureau (NCRB) India, PMC research articles on farmers' 
+            suicides (2024), IIED climate change analysis, and qualitative studies from Andhra Pradesh 
+            and Telangana.
+        </p>
+    </div>
+
+    <!-- Final Message -->
+    <div class="thank-you-box">
+        <h2>Thank You for Caring 🙏</h2>
+        <p>
+            Whether you donate today or simply share this cause with others, you're helping raise 
+            awareness about a crisis that takes 48 lives every day.
+        </p>
+        <p>
+            <strong>Together, we can make farming a sustainable livelihood instead of a death sentence.</strong>
+        </p>
+    </div>
+</div>
+
+<style>
+.crisis-box {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    padding: 35px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.crisis-box h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 28px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+    padding-bottom: 15px;
+}
+
+.crisis-box p {
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.crisis-box p:last-child {
+    margin-bottom: 0;
+}
+
+.crisis-box strong {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.content-section {
+    margin-bottom: 50px;
+}
+
+.content-section h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    font-size: 26px;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 12px;
+}
+
+.content-section h3 {
+    color: #34495e;
+    margin-bottom: 12px;
+    font-size: 19px;
+}
+
+.content-section p {
+    line-height: 1.7;
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 16px;
+}
+
+.causes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.cause-card {
+    background: white;
+    border: 2px solid #e8e8e8;
+    border-radius: 10px;
+    padding: 18px;
+    transition: all 0.3s ease;
+}
+
+.cause-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    border-color: #3498db;
+}
+
+.cause-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.cause-card .icon {
+    font-size: 36px;
+    flex-shrink: 0;
+}
+
+.cause-card h3 {
+    margin: 0;
+    font-size: 17px;
+    color: #2c3e50;
+}
+
+.cause-card p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.climate-impact {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    padding: 20px 25px;
+    margin: 25px 0;
+    border-radius: 4px;
+}
+
+.climate-impact p {
+    margin: 0;
+    color: #856404;
+    font-size: 15px;
+}
+
+.impact-stat {
+    background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+    color: white;
+    padding: 35px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 30px 0;
+}
+
+.stat-number {
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 15px;
+}
+
+.stat-text {
+    font-size: 20px;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.help-card {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 18px;
+    transition: all 0.3s ease;
+}
+
+.help-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    border-color: #3498db;
+}
+
+.help-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.help-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.help-card h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #2c3e50;
+}
+
+.help-card p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.small-amounts-box {
+    background: #e8f5e9;
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid #4caf50;
+    margin: 25px 0;
+}
+
+.small-amounts-box h3 {
+    margin-top: 0;
+    color: #2e7d32;
+}
+
+.small-amounts-box ul {
+    margin: 20px 0 20px 25px;
+    line-height: 2;
+}
+
+.small-amounts-box li {
+    color: #2e7d32;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.small-amounts-box .emphasis {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin: 20px 0 0 0;
+    font-size: 17px;
+    color: #1b5e20;
+}
+
+.donate-cta-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 45px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 50px 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.donate-cta-box h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 32px;
+    border: none;
+    color: white;
+}
+
+.donate-cta-box > p {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: rgba(255,255,255,0.95);
+}
+
+.donate-button-container {
+    margin: 35px 0;
+}
+
+.btn-donate-large {
+    display: inline-block;
+    background: white;
+    color: #667eea;
+    padding: 20px 50px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.btn-donate-large:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+    text-decoration: none;
+}
+
+.donate-text {
+    display: block;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.donate-subtext {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+.tax-note {
+    font-size: 14px;
+    margin-top: 25px;
+    margin-bottom: 0;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+.sources-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 8px;
+    border-left: 4px solid #6c757d;
+    margin: 40px 0;
+}
+
+.sources-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #495057;
+}
+
+.sources-note {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.sources-section p:last-child {
+    margin-bottom: 0;
+}
+
+.thank-you-box {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.thank-you-box h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 32px;
+}
+
+.thank-you-box p {
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+.thank-you-box p:last-child {
+    margin-bottom: 0;
+    font-size: 19px;
+}
+</style>
+
+
+<style>
+.mission-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.mission-box h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 26px;
+}
+
+.mission-box p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.content-section {
+    margin-bottom: 50px;
+}
+
+.content-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.content-section h3 {
+    color: #444;
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.content-section p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.content-section ul {
+    margin-left: 30px;
+    line-height: 1.8;
+    color: #555;
+}
+
+.content-section ul li {
+    margin-bottom: 8px;
+}
+
+.content-section a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.content-section a:hover {
+    text-decoration: underline;
+}
+
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.support-card {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.support-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.support-card .icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.support-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.support-card p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.impact-list {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.impact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.impact-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.impact-item .amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #28a745;
+    min-width: 100px;
+}
+
+.impact-item .description {
+    color: #555;
+    line-height: 1.5;
+}
+
+.donate-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.donate-method {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+}
+
+.donate-method h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.donate-method ul {
+    margin-left: 20px;
+}
+
+.donate-buttons {
+    margin: 20px 0;
+}
+
+.btn-donate {
+    display: inline-block;
+    background: #0070ba;
+    color: white;
+    padding: 14px 30px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.btn-donate:hover {
+    background: #005a94;
+    text-decoration: none;
+}
+
+.note {
+    font-size: 13px;
+    color: #6c757d;
+    margin-top: 15px;
+    font-style: italic;
+}
+
+.budget-breakdown {
+    margin: 25px 0;
+}
+
+.budget-item {
+    margin-bottom: 20px;
+}
+
+.budget-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.budget-bar {
+    background: #e9ecef;
+    height: 35px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.budget-fill {
+    background: linear-gradient(90deg, #28a745, #20c997);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    transition: width 0.3s;
+}
+
+.faq-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border-left: 4px solid #007bff;
+}
+
+.faq-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 17px;
+}
+
+.faq-item p {
+    margin: 0;
+    color: #555;
+    line-height: 1.6;
+}
+
+.thank-you-box {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    padding: 35px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.thank-you-box h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+
+.thank-you-box p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.thank-you-box p:last-child {
+    margin-bottom: 0;
+}
+</style>

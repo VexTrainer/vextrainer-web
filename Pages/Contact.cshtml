@@ -1,0 +1,280 @@
+@page
+@model VexTrainerWeb.Pages.ContactModel
+@{
+    ViewData["Title"] = "Contact Us";
+    Layout = "_Layout";
+}
+
+<div class="page-header">
+    <h1>Contact Us</h1>
+    <p class="subtitle">We'd love to hear from you</p>
+</div>
+
+<div class="container" style="max-width: 700px;">
+    @if (Model.SuccessMessage != null)
+    {
+        <div class="alert alert-success">
+            @Model.SuccessMessage
+        </div>
+    }
+    
+    @if (Model.ErrorMessage != null)
+    {
+        <div class="alert alert-error">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    <div class="contact-form-container">
+        <form method="post" id="contactForm">
+            @Html.AntiForgeryToken()
+            
+            <!-- Hidden honeypot field for spam prevention -->
+            <div style="position: absolute; left: -9999px;">
+                <label for="website">Website (leave blank)</label>
+                <input type="text" id="website" name="Website" value="" tabindex="-1" autocomplete="off" />
+            </div>
+
+            <!-- Category Selection -->
+            <div class="form-group">
+                <label for="category">Category <span class="required">*</span></label>
+                <select id="category" name="Category" class="form-control" required>
+                    <option value="Suggestion" selected>Suggestion</option>
+                    <option value="Correction">Correction</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span class="field-validation-error" id="categoryError"></span>
+            </div>
+
+            <!-- Feedback Text -->
+            <div class="form-group">
+                <label for="message">Your Message <span class="required">*</span></label>
+                <textarea 
+                    id="message" 
+                    name="Message" 
+                    class="form-control" 
+                    rows="10" 
+                    maxlength="2000" 
+                    placeholder="Please share your feedback, suggestions, or report any issues you've found..."
+                    required
+                    autofocus></textarea>
+                <div class="char-counter">
+                    <span id="charCount">0</span> / 2000 characters
+                </div>
+                <span class="field-validation-error" id="messageError"></span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    Send Message
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Additional Info -->
+    <div class="contact-info">
+        <h3>About Your Privacy</h3>
+        <p>
+            Your feedback will be sent to our team for review. We use your email address (if you're signed in) 
+            only to respond to your message if needed. We do not share your information with third parties.
+        </p>
+    </div>
+</div>
+
+<style>
+.contact-form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.required {
+    color: #dc3545;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 150px;
+    font-family: inherit;
+}
+
+.char-counter {
+    text-align: right;
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.char-counter.warning {
+    color: #ffc107;
+    font-weight: 600;
+}
+
+.char-counter.danger {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+}
+
+.btn-primary:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.field-validation-error {
+    color: #dc3545;
+    font-size: 13px;
+    display: block;
+    margin-top: 5px;
+}
+
+.contact-info {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 6px;
+    margin-top: 30px;
+}
+
+.contact-info h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.contact-info p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.contact-info a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const messageInput = document.getElementById('message');
+    const charCount = document.getElementById('charCount');
+    const charCounter = document.querySelector('.char-counter');
+    const categorySelect = document.getElementById('category');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('contactForm');
+
+    // Character counter
+    messageInput.addEventListener('input', function() {
+        const count = this.value.length;
+        charCount.textContent = count;
+        
+        // Update styling based on character count
+        charCounter.classList.remove('warning', 'danger');
+        if (count > 1800) {
+            charCounter.classList.add('danger');
+        } else if (count > 1500) {
+            charCounter.classList.add('warning');
+        }
+    });
+
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        // Clear previous errors
+        document.getElementById('categoryError').textContent = '';
+        document.getElementById('messageError').textContent = '';
+        
+        // Validate category
+        if (!categorySelect.value) {
+            document.getElementById('categoryError').textContent = 'Please select a category';
+            isValid = false;
+        }
+        
+        // Validate message
+        const message = messageInput.value.trim();
+        if (!message) {
+            document.getElementById('messageError').textContent = 'Please enter your message';
+            isValid = false;
+        } else if (message.length < 10) {
+            document.getElementById('messageError').textContent = 'Message must be at least 10 characters';
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+        } else {
+            // Disable submit button to prevent double submission
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+        }
+    });
+});
+</script>

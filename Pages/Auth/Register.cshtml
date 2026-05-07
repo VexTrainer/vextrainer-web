@@ -1,0 +1,128 @@
+@page
+@model VexTrainerWeb.Pages.Auth.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_Layout";
+}
+
+<div class="form-container">
+    <h2>Create Your Free Account</h2>
+    
+    <form id="registerForm" method="post">
+        <!-- Full Name Field -->
+        <div class="form-group floating-label">
+            <input type="text" 
+                   id="fullName" 
+                   name="FullName" 
+                   asp-for="FullName"
+                   required 
+                   autocomplete="name"
+                   placeholder=" " />
+            <label for="fullName">Full Name (FirstName LastName)</label>
+            <span class="error-message" id="fullNameError" asp-validation-for="FullName"></span>
+        </div>
+        
+        <!-- Email Field (pre-filled if coming from sign-in) -->
+        <div class="form-group floating-label">
+            <input type="email" 
+                   id="email" 
+                   name="Email" 
+                   asp-for="Email"
+                   required 
+                   autocomplete="email"
+                   placeholder=" " />
+            <label for="email">Email</label>
+            <span class="error-message" id="emailError" asp-validation-for="Email"></span>
+        </div>
+        
+        <!-- Password Field -->
+        <div class="form-group floating-label">
+            <input type="password" 
+                   id="password" 
+                   name="Password"
+                   asp-for="Password"
+                   minlength="8" 
+                   autocomplete="new-password"
+                   placeholder=" " />
+            <label for="password">Password</label>
+            <button type="button" class="toggle-password" onclick="togglePassword('password', 'eyeIcon')">
+                <span id="eyeIcon">👁️</span>
+            </button>
+            <small class="help-text">Must be 8+ characters with uppercase, lowercase, number, and special character</small>
+            <span class="error-message" id="passwordError" asp-validation-for="Password"></span>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="form-group floating-label">
+            <input type="password" 
+                   id="confirmPassword" 
+                   name="ConfirmPassword"
+                   asp-for="ConfirmPassword"
+                   minlength="8" 
+                   autocomplete="new-password"
+                   placeholder=" " />
+            <label for="confirmPassword">Confirm Password</label>
+            <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', 'eyeIcon2')">
+                <span id="eyeIcon2">👁️</span>
+            </button>
+            <span class="error-message" id="confirmPasswordError" asp-validation-for="ConfirmPassword"></span>
+        </div>
+
+        <!-- Terms Agreement -->
+        <div class="form-group">
+            <label style="display: flex; align-items: start; gap: 10px; cursor: pointer;">
+                <input type="checkbox" 
+                       name="AgreeToTerms"
+                       asp-for="AgreeToTerms"
+                       required 
+                       style="margin-top: 4px;" />
+                <span>I agree to the <a href="/Static/Privacy" target="_blank">Terms of Service and Privacy Policy</a></span>
+            </label>
+            <span class="error-message" asp-validation-for="AgreeToTerms"></span>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block" id="registerButton">Create Account</button>
+        
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-error mt-20">
+                @Model.ErrorMessage
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+        {
+            <div class="alert alert-success mt-20">
+                @Model.SuccessMessage
+            </div>
+        }
+    </form>
+    
+    <!-- Sign In Link -->
+    <div class="text-center mt-30">
+        <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='/Auth/SignIn'">
+            Already have an account? Sign in
+        </button>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+// Initialize Register page
+VexTrainer.Register.init();
+
+// Add loading state to register button
+const registerForm = document.getElementById('registerForm');
+const registerButton = document.getElementById('registerButton');
+
+if (registerForm && registerButton) {
+    registerForm.addEventListener('submit', function(e) {
+        if (this.checkValidity()) {
+            registerButton.disabled = true;
+            registerButton.textContent = 'Registering & Sending confirmation email...';
+        }
+    });
+}
+</script>
+}

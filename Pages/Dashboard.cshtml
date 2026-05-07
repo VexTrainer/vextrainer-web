@@ -1,0 +1,89 @@
+@page
+@model VexTrainerWeb.Pages.DashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container">
+    <div class="dashboard-header">
+        <h1>Welcome back, @User.Identity?.Name! 👋</h1>
+        <p class="text-muted">Continue your PROS programming journey</p>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Lessons Completed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">25</div>
+            <div class="stat-label">Total Lessons</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">0%</div>
+            <div class="stat-label">Progress</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Quick Actions</div>
+        <div class="card-body">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <a href="/Lessons" class="btn btn-primary">Browse Lessons</a>
+                <a href="/Profile" class="btn btn-secondary">Edit Profile</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Start Learning</div>
+        <div class="card-body">
+            <div class="card-grid">
+                <div class="module-card">
+                    <div class="module-icon">📚</div>
+                    <div class="module-title">PROS Fundamentals</div>
+                    <div class="module-description">Start with the basics</div>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span>0%</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">⚙️</div>
+                    <div class="module-title">Hardware & Sensors</div>
+                    <div class="module-description">Control motors and sensors</div>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span>0%</span>
+                    </div>
+                </div>
+                <div class="module-card">
+                    <div class="module-icon">🤖</div>
+                    <div class="module-title">Autonomous Programming</div>
+                    <div class="module-description">Build autonomous routines</div>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span>0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">📱 Get More with Mobile App</div>
+        <div class="card-body">
+            <p>Take quizzes, track progress, and earn achievements with our mobile app!</p>
+            <div style="margin-top: 15px; display: flex; gap: 15px;">
+                <a href="#" class="app-badge">🍎 iOS</a>
+                <a href="#" class="app-badge">🤖 Android</a>
+            </div>
+        </div>
+    </div>
+</div>

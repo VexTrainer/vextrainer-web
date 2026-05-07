@@ -1,0 +1,121 @@
+@page
+@model VexTrainerWeb.Pages.AboutModel
+@{
+    ViewData["Title"] = "About";
+    Layout = "_Layout";
+}
+
+<div class="page-header">
+    <h1>About VexTrainer</h1>
+    <p class="subtitle">Professional PROS programming curriculum for VEX robotics teams</p>
+</div>
+
+<div class="container" style="max-width: 900px;">
+    <div class="content-section">
+        <h2>What is VexTrainer?</h2>
+        <p>
+            VexTrainer is a comprehensive, structured curriculum designed to teach competitive VEX robotics teams 
+            how to program their robots using PROS (Purdue Robotics Operating System) and C++. Our lessons take 
+            students from absolute beginners to advanced autonomous programming, covering everything from basic 
+            motor control to PID algorithms, odometry, and path following.
+        </p>
+    </div>
+
+    <div class="content-section">
+        <h2>Why PROS?</h2>
+        <p>
+            PROS is a professional-grade robotics development environment that gives teams complete control over 
+            their robot's code. Unlike block-based programming environments, PROS:
+        </p>
+        <ul>
+            <li>Provides direct access to all V5 hardware capabilities</li>
+            <li>Enables precise timing and real-time control</li>
+            <li>Supports industry-standard development tools (VS Code, Git, etc.)</li>
+            <li>Prepares students for college-level computer science and engineering</li>
+            <li>Is used by top-performing teams worldwide</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2>Our Approach</h2>
+        <p>
+            VexTrainer teaches fundamentals first. Instead of relying on pre-built libraries, students learn 
+            to build their own PID controllers, odometry systems, and autonomous routines from scratch. This 
+            deep understanding means students can debug issues, customize behavior, and explain their code 
+            to judges during competition.
+        </p>
+        <p>
+            Each lesson includes:
+        </p>
+        <ul>
+            <li>Clear explanations of concepts and theory</li>
+            <li>Practical code examples with syntax highlighting</li>
+            <li>Real-world applications to competitive robotics</li>
+            <li>Progress tracking to monitor learning</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2>Who We Serve</h2>
+        <p>
+            VexTrainer is designed for VEX V5 robotics teams who want to:
+        </p>
+        <ul>
+            <li>Learn professional-grade programming skills</li>
+            <li>Gain a competitive advantage through advanced autonomous routines</li>
+            <li>Build a strong foundation for college CS/engineering programs</li>
+            <li>Understand their code well enough to explain it to judges</li>
+            <li>Develop problem-solving and critical thinking skills</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2>Open Source & Community</h2>
+        <p>
+            VexTrainer's curriculum is built on the principle that quality robotics education should be 
+            accessible to all teams. Our lessons are freely available, and we welcome feedback and 
+            contributions from the community.
+        </p>
+    </div>
+
+    <div class="content-section" style="text-align: center; padding: 30px; background: #f8f9fa; border-radius: 8px;">
+        <h3>Ready to get started?</h3>
+        <p>Create a free account and begin your journey to advanced robotics programming.</p>
+        <a href="/Auth/Register" class="btn-primary" style="display: inline-block; padding: 12px 30px; margin-top: 15px; background: #007bff; color: white; text-decoration: none; border-radius: 6px;">Get Started</a>
+    </div>
+</div>
+
+<style>
+.content-section {
+    margin-bottom: 40px;
+}
+
+.content-section h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 24px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+.content-section h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.content-section p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.content-section ul {
+    margin-left: 30px;
+    line-height: 1.8;
+    color: #555;
+}
+
+.content-section ul li {
+    margin-bottom: 8px;
+}
+</style>

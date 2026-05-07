@@ -1,0 +1,301 @@
+@page
+@model VexTrainerWeb.Pages.Auth.DeleteAccountModel
+@{
+    ViewData["Title"] = "Delete Account";
+}
+
+<style>
+/* padding-top avoids margin-collapse jump on refresh */
+.delete-container {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    min-height: 70vh;
+}
+
+/* Undo site.css .card padding so Bootstrap card structure works correctly */
+.delete-card {
+    padding: 0 !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 8px !important;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* Override site.css .card-header which strips background-color */
+.delete-card .card-header {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-bottom: none !important;
+    border-radius: 8px 8px 0 0 !important;
+    padding: 1.25rem 1.5rem !important;
+    text-align: center !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Override site.css .card-body which strips padding */
+.delete-card .card-body {
+    padding: 1.5rem !important;
+}
+
+/* Override site.css .btn which removes border */
+.delete-card .btn-danger {
+    background-color: #dc3545 !important;
+    border: 1px solid #dc3545 !important;
+    color: white !important;
+    width: 100%;
+    padding: 0.6rem 1rem !important;
+    font-size: 1rem !important;
+    border-radius: 6px !important;
+}
+.delete-card .btn-danger:hover {
+    background-color: #bb2d3b !important;
+    border-color: #b02a37 !important;
+    color: white !important;
+}
+.delete-card .btn-danger:disabled {
+    opacity: 0.65 !important;
+    cursor: not-allowed;
+}
+
+/* Custom warning box — NOT using .alert class to avoid site.js auto-dismiss */
+.delete-warning-box {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #664d03;
+    padding: 1rem;
+    margin: 0 0 1rem 0;
+    border-radius: 6px;
+}
+
+.state-panel {
+    display: none;
+}
+.state-panel.active {
+    display: block;
+}
+.success-icon {
+    font-size: 3rem;
+    color: #198754;
+}
+</style>
+
+<div class="container delete-container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+            <div class="card delete-card">
+
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="bi bi-person-x-fill me-2"></i>Delete Account
+                    </h4>
+                </div>
+
+                <div class="card-body">
+
+                    @* ── STATE 1: Email request form (default) ── *@
+                    <div class="state-panel active" id="requestPanel">
+
+                        <p class="text-muted mb-3">
+                            Permanently remove your VexTrainer account and all associated data.
+                        </p>
+
+                        <div class="delete-warning-box">
+                            <p class="mb-2">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                <strong>This action is permanent and cannot be undone.</strong>
+                            </p>
+                            <ul class="mb-0 ps-3">
+                                <li>Your account and profile will be deleted.</li>
+                                <li>Your progress and lesson history will be removed.</li>
+                                <li>You will be signed out immediately.</li>
+                            </ul>
+                        </div>
+
+                        <form id="requestForm" onsubmit="handleDeleteRequest(event)">
+                            @Html.AntiForgeryToken()
+                            <div class="mt-3">
+                                <label for="emailInput" style="display:block; font-weight:600; margin-bottom:0.5rem;">
+                                    Your account email address
+                                </label>
+                                <input type="email"
+                                       id="emailInput"
+                                       name="email"
+                                       class="form-control form-control-lg"
+                                       placeholder="you@example.com"
+                                       required
+                                       autocomplete="email"
+                                       autofocus />
+                                <div class="invalid-feedback" id="emailError"></div>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-danger" id="requestBtn">
+                                    Send Deletion Confirmation Email
+                                </button>
+                            </div>
+                        </form>
+
+                        <hr class="my-3">
+                        <div class="text-center">
+                            <a asp-page="/Auth/SignIn" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i>Back to Sign-In
+                            </a>
+                        </div>
+                    </div>
+
+                    @* ── STATE 2: Email sent confirmation ── *@
+                    <div class="state-panel" id="sentPanel">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-envelope-check-fill" style="font-size:3rem; color:#0d6efd;"></i>
+                            </div>
+                            <h5 class="mb-3">Check your inbox</h5>
+                            <p class="text-muted">
+                                If an account exists for that email address, a deletion confirmation
+                                link has been sent. The link expires in <strong>24 hours</strong>.
+                            </p>
+                            <p class="text-muted small">
+                                Didn't receive it? Check your spam folder, or
+                                <a href="javascript:void(0)" onclick="showPanel('requestPanel')">try again</a>.
+                            </p>
+                        </div>
+                    </div>
+
+                    @* ── STATE 3: Token confirming ── *@
+                    <div class="state-panel" id="confirmingPanel">
+                        <div class="text-center py-3">
+                            <div class="spinner-border text-danger mb-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="text-muted">Verifying your deletion request...</p>
+                        </div>
+                    </div>
+
+                    @* ── STATE 4: Deletion success ── *@
+                    <div class="state-panel" id="successPanel">
+                        <div class="text-center">
+                            <div class="success-icon mb-3">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                            <h5 class="text-success mb-3">Account Deleted</h5>
+                            <p class="text-muted">
+                                Your account and all associated personal data have been
+                                permanently deleted. A confirmation email has been sent to you.
+                            </p>
+                            <a asp-page="/Index" class="btn btn-outline-secondary mt-2">
+                                <i class="bi bi-house me-1"></i>Go to Home
+                            </a>
+                        </div>
+                    </div>
+
+                    @* ── STATE 5: Error ── *@
+                    <div class="state-panel" id="errorPanel">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-x-circle-fill text-danger" style="font-size:3rem;"></i>
+                            </div>
+                            <h5 class="text-danger mb-3">Something went wrong</h5>
+                            <p class="text-muted" id="errorMessage"></p>
+                            <div class="d-flex gap-2 justify-content-center mt-3">
+                                <a href="/Auth/DeleteAccount" class="btn btn-outline-danger btn-sm">Try Again</a>
+                                <a asp-page="/Auth/SignIn" class="btn btn-outline-secondary btn-sm">Back to Sign-In</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /card-body -->
+            </div><!-- /card -->
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+function showPanel(id) {
+    document.querySelectorAll('.state-panel').forEach(function (p) {
+        p.classList.remove('active');
+    });
+    var el = document.getElementById(id);
+    if (el) el.classList.add('active');
+}
+
+function getAntiForgeryToken() {
+    var input = document.querySelector('input[name="__RequestVerificationToken"]');
+    return input ? input.value : '';
+}
+
+// Called inline from onsubmit — no jQuery, no DOMContentLoaded race
+function handleDeleteRequest(e) {
+    e.preventDefault();
+
+    var emailInput = document.getElementById('emailInput');
+    var email = emailInput.value.trim();
+
+    if (!email) {
+        emailInput.classList.add('is-invalid');
+        document.getElementById('emailError').textContent = 'Please enter your email address.';
+        return false;
+    }
+    emailInput.classList.remove('is-invalid');
+
+    var btn = document.getElementById('requestBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    fetch('/Auth/DeleteAccount?handler=Request', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': getAntiForgeryToken()
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function () {
+        showPanel('sentPanel');
+    })
+    .catch(function () {
+        btn.disabled = false;
+        btn.textContent = 'Send Deletion Confirmation Email';
+        alert('A network error occurred. Please try again.');
+    });
+
+    return false;
+}
+
+function confirmDeletion(token) {
+    showPanel('confirmingPanel');
+
+    fetch('/Auth/DeleteAccount?handler=Confirm', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'RequestVerificationToken': getAntiForgeryToken()
+        },
+        body: JSON.stringify({ token: token })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (response) {
+        if (response.success) {
+            showPanel('successPanel');
+        } else {
+            document.getElementById('errorMessage').textContent =
+                response.message || 'This deletion link is invalid or has expired.';
+            showPanel('errorPanel');
+        }
+    })
+    .catch(function () {
+        document.getElementById('errorMessage').textContent = 'A network error occurred. Please try again.';
+        showPanel('errorPanel');
+    });
+}
+
+// Token confirmation on page load (user clicked email link)
+(function () {
+    var token = new URLSearchParams(window.location.search).get('token');
+    if (token) confirmDeletion(token);
+})();
+</script>
+}

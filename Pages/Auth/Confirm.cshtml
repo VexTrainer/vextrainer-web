@@ -1,0 +1,44 @@
+@page
+@model VexTrainerWeb.Pages.Auth.ConfirmModel
+@{
+    ViewData["Title"] = "Confirm Email";
+    Layout = "_Layout";
+}
+
+<div class="form-container">
+    @if (Model.IsSuccess)
+    {
+        <div class="text-center">
+            <div style="font-size: 64px; margin-bottom: 20px;">✅</div>
+            <h2>Email Confirmed!</h2>
+            <p class="text-muted mt-20">Your account has been successfully activated.</p>
+            <div class="mt-30">
+                <a href="/Auth/SignIn" class="btn btn-primary btn-block">Sign In to Your Account</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <div style="font-size: 64px; margin-bottom: 20px;">❌</div>
+            <h2>Confirmation Failed</h2>
+            <p class="text-muted mt-20">@Model.ErrorMessage</p>
+            
+            @if (Model.IsExpired)
+            {
+                <div class="mt-30">
+                    <p>Your confirmation link has expired.</p>
+                    <button type="button" class="btn btn-primary btn-block" onclick="alert('Resend confirmation feature coming soon!')">
+                        Resend Confirmation Email
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="mt-30">
+                    <a href="/Auth/Register" class="btn btn-secondary btn-block">Register Again</a>
+                </div>
+            }
+        </div>
+    }
+</div>
