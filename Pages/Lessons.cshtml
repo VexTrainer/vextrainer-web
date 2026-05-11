@@ -55,23 +55,23 @@
                         {
                             var lessonStatus = Model.GetLessonStatus(lesson);
                             var lessonId = $"lesson-{lesson.LessonId}";
-                            var fileNameWithoutExtension = lesson.FileName.Replace(".md", "");
                             
                             <!-- Lesson Level -->
                             <div class="accordion-item lesson-level @GetStatusClass(lessonStatus)">
-                                <div class="accordion-header">
-                                    @if (lesson.Topics.Any())
-                                    {
-                                        <span class="toggle-icon" id="@lessonId-icon" onclick="toggleAccordion('@lessonId'); event.stopPropagation();">▶</span>
-                                    }
-                                    else
-                                    {
+                                @if (lesson.Topics.Any())
+                                {
+                                    <div class="accordion-header" onclick="toggleAccordion('@lessonId')">
+                                        <span class="toggle-icon" id="@lessonId-icon">▶</span>
+                                        <span class="item-title lesson-link">@lesson.LessonTitle</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="accordion-header">
                                         <span class="toggle-icon-spacer"></span>
-                                    }
-                                    <a href="/Lesson/@fileNameWithoutExtension" class="item-title lesson-link">
-                                        @lesson.LessonTitle
-                                    </a>
-                                </div>
+                                        <span class="item-title lesson-link">@lesson.LessonTitle</span>
+                                    </div>
+                                }
                                 
                                 @if (lesson.Topics.Any())
                                 {
