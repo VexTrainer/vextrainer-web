@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 using VexTrainer.Data.Services;
 
 namespace VexTrainerWeb.Pages;
@@ -50,7 +51,13 @@ public class BasePage : PageModel
     {
         get
         {
-            if (HttpContext?.Session.GetInt32("UserId") is int userId)
+            // Read UserId from the authentication cookie claims.
+            // SignIn writes it as both ClaimTypes.NameIdentifier and a custom "UserId" claim;
+            // we check both for resilience.
+            var idClaim = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                          ?? User?.FindFirst("UserId")?.Value;
+
+            if (int.TryParse(idClaim, out int userId))
             {
                 return userId;
             }
