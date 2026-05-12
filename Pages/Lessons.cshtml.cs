@@ -68,34 +68,56 @@ public class LessonsModel : BasePage
                     if (topicsResult.Success && topicsResult.Data != null)
                     {
                         // Build topic hierarchy (H3 topics with H4 sub-topics)
-                        var h3Topics = topicsResult.Data.Where(t => t.HeadingLevel == 3).OrderBy(t => t.DisplayOrder);
+                        var h3Topics = topicsResult.Data
+                            .Where(t => t.HeadingLevel == 3)
+                            .OrderBy(t => t.DisplayOrder)
+                            .ToList();
 
-                        foreach (var h3Topic in h3Topics)
+                        if (h3Topics.Any())
                         {
-                            var topicHierarchy = new TopicHierarchy
+                            // Normal case: lesson has H3 topics (possibly with H4 sub-topics)
+                            foreach (var h3Topic in h3Topics)
                             {
-                                TopicId = h3Topic.TopicId,
-                                TopicTitle = h3Topic.TopicTitle,
-                                IsRead = h3Topic.IsRead,
-                                SubTopics = new List<SubTopicInfo>()
-                            };
-
-                            // Find H4 sub-topics for this H3
-                            var h4SubTopics = topicsResult.Data
-                                .Where(t => t.HeadingLevel == 4 && t.ParentTopicId == h3Topic.TopicId)
-                                .OrderBy(t => t.DisplayOrder);
-
-                            foreach (var h4Topic in h4SubTopics)
-                            {
-                                topicHierarchy.SubTopics.Add(new SubTopicInfo
+                                var topicHierarchy = new TopicHierarchy
                                 {
-                                    TopicId = h4Topic.TopicId,
-                                    SubTopicTitle = h4Topic.TopicTitle,
-                                    IsRead = h4Topic.IsRead
-                                });
-                            }
+                                    TopicId = h3Topic.TopicId,
+                                    TopicTitle = h3Topic.TopicTitle,
+                                    IsRead = h3Topic.IsRead,
+                                    SubTopics = new List<SubTopicInfo>()
+                                };
 
-                            lessonWithTopics.Topics.Add(topicHierarchy);
+                                // Find H4 sub-topics for this H3
+                                var h4SubTopics = topicsResult.Data
+                                    .Where(t => t.HeadingLevel == 4 && t.ParentTopicId == h3Topic.TopicId)
+                                    .OrderBy(t => t.DisplayOrder);
+
+                                foreach (var h4Topic in h4SubTopics)
+                                {
+                                    topicHierarchy.SubTopics.Add(new SubTopicInfo
+                                    {
+                                        TopicId = h4Topic.TopicId,
+                                        SubTopicTitle = h4Topic.TopicTitle,
+                                        IsRead = h4Topic.IsRead
+                                    });
+                                }
+
+                                lessonWithTopics.Topics.Add(topicHierarchy);
+                            }
+                        }
+                        else
+                        {
+                            // Single-page lesson: only an H2 topic exists (no H3 breakdown).
+                            // Treat the H2 as the lesson's content target — the lesson title
+                            // will link directly to it instead of being an accordion.
+                            var h2Topic = topicsResult.Data
+                                .Where(t => t.HeadingLevel == 2)
+                                .OrderBy(t => t.DisplayOrder)
+                                .FirstOrDefault();
+
+                            if (h2Topic != null)
+                            {
+                                lessonWithTopics.SingleTopicId = h2Topic.TopicId;
+                            }
                         }
                     }
 
@@ -184,6 +206,13 @@ public class LessonWithTopics
     public short TopicsRead { get; set; }
     public short TotalTopics { get; set; }
     public List<TopicHierarchy> Topics { get; set; } = new();
+
+    /// <summary>
+    /// For single-page lessons (only an H2 topic, no H3 breakdown), this holds the
+    /// topic id to link the lesson title directly to its content page.
+    /// Null when the lesson has H3 topics (rendered as an accordion instead).
+    /// </summary>
+    public int? SingleTopicId { get; set; }
 }
 
 /// <summary>

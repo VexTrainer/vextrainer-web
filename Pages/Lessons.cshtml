@@ -67,6 +67,11 @@ else {
 }
 </div>
 }
+else if (lesson.SingleTopicId.HasValue) {
+    var singleTopicUrl = TopicUrlEncoder.Encode(module.ModuleId, lesson.LessonId, lesson.SingleTopicId.Value);
+@* Single-page lesson: H2-only, title links directly to content *@
+<div class="accordion-header"><span class="toggle-icon-spacer"></span><a href="/Lesson/@singleTopicUrl" class="item-title lesson-link">@lesson.LessonTitle</a></div>
+}
 else {
 <div class="accordion-header"><span class="toggle-icon-spacer"></span><span class="item-title lesson-link">@lesson.LessonTitle</span></div>
 }
