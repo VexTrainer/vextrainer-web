@@ -12,140 +12,82 @@
 </div>
 
 <div class="container">
-    <!-- Legend -->
     <div class="progress-legend">
-        <div class="legend-item">
-            <span class="status-indicator" style="background: #28a745;"></span>
-            <span>Completed</span>
-        </div>
-        <div class="legend-item">
-            <span class="status-indicator" style="background: #ffc107;"></span>
-            <span>In Progress</span>
-        </div>
-        <div class="legend-item">
-            <span class="status-indicator" style="background: #6c757d;"></span>
-            <span>Not Started</span>
-        </div>
+        <div class="legend-item"><span class="status-indicator" style="background: #28a745;"></span><span>Completed</span></div>
+        <div class="legend-item"><span class="status-indicator" style="background: #ffc107;"></span><span>In Progress</span></div>
+        <div class="legend-item"><span class="status-indicator" style="background: #6c757d;"></span><span>Not Started</span></div>
     </div>
 
-    @if (Model.ErrorMessage != null)
-    {
-        <div class="alert alert-error">
-            @Model.ErrorMessage
-        </div>
-    }
-    else if (Model.Modules != null && Model.Modules.Any())
-    {
-        <!-- Accordion-Style Lessons List -->
-        <div class="accordion-lessons">
-            @foreach (var module in Model.Modules)
-            {
-                var moduleStatus = Model.GetModuleStatus(module.ModuleId);
-                var moduleId = $"module-{module.ModuleId}";
-                
-                <!-- Module Level -->
-                <div class="accordion-item @GetStatusClass(moduleStatus)">
-                    <div class="accordion-header" onclick="toggleAccordion('@moduleId')">
-                        <span class="toggle-icon" id="@moduleId-icon">▶</span>
-                        <span class="item-title">@module.ModuleName</span>
-                    </div>
-                    
-                    <div class="accordion-content" id="@moduleId" style="display: none;">
-                        @foreach (var lesson in module.Lessons)
-                        {
-                            var lessonStatus = Model.GetLessonStatus(lesson);
-                            var lessonId = $"lesson-{lesson.LessonId}";
-                            
-                            <!-- Lesson Level -->
-                            <div class="accordion-item lesson-level @GetStatusClass(lessonStatus)">
-                                @if (lesson.Topics.Any())
-                                {
-                                    <div class="accordion-header" onclick="toggleAccordion('@lessonId')">
-                                        <span class="toggle-icon" id="@lessonId-icon">▶</span>
-                                        <span class="item-title lesson-link">@lesson.LessonTitle</span>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="accordion-header">
-                                        <span class="toggle-icon-spacer"></span>
-                                        <span class="item-title lesson-link">@lesson.LessonTitle</span>
-                                    </div>
-                                }
-                                
-                                @if (lesson.Topics.Any())
-                                {
-                                    <div class="accordion-content" id="@lessonId" style="display: none;">
-                                        @foreach (var topic in lesson.Topics)
-                                        {
-                                            var topicId = $"topic-{topic.TopicId}";
-                                            var topicStatus = topic.IsRead ? "Completed" : "Unread";
-                                            var topicUrl = TopicUrlEncoder.Encode(module.ModuleId, lesson.LessonId, topic.TopicId);
-                                            
-                                            <!-- Topic Level (H3) -->
-                                            <div class="accordion-item topic-level @GetStatusClass(topicStatus)">
-                                                <div class="accordion-header">
-                                                    @if (topic.SubTopics.Any())
-                                                    {
-                                                        <span class="toggle-icon" id="@topicId-icon" onclick="toggleAccordion('@topicId'); event.stopPropagation();">▶</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="toggle-icon-spacer"></span>
-                                                    }
-                                                    <a href="/Lesson/@topicUrl" class="item-title topic-link">
-                                                        @topic.TopicTitle
-                                                    </a>
-                                                </div>
-                                                
-                                                @if (topic.SubTopics.Any())
-                                                {
-                                                    <div class="accordion-content" id="@topicId" style="display: none;">
-                                                        @foreach (var subTopic in topic.SubTopics)
-                                                        {
-                                                            var subTopicStatus = subTopic.IsRead ? "Completed" : "Unread";
-                                                            var subTopicUrl = TopicUrlEncoder.Encode(module.ModuleId, lesson.LessonId, subTopic.TopicId);
-                                                            
-                                                            <!-- Sub-Topic Level (H4) -->
-                                                            <div class="accordion-item subtopic-level @GetStatusClass(subTopicStatus)">
-                                                                <div class="accordion-header">
-                                                                    <span class="toggle-icon-spacer"></span>
-                                                                    <a href="/Lesson/@subTopicUrl" class="item-title subtopic-link">
-                                                                        @subTopic.SubTopicTitle
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                }
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="empty-state">
-            <p>No lessons available yet. Check back soon!</p>
-        </div>
-    }
+@if (Model.ErrorMessage != null) {
+<div class="alert alert-error">@Model.ErrorMessage</div>
+}
+else if (Model.Modules != null && Model.Modules.Any()) {
+<div class="accordion-lessons">
+@foreach (var module in Model.Modules) {
+    var moduleStatus = Model.GetModuleStatus(module.ModuleId);
+    var moduleId = $"module-{module.ModuleId}";
+@* ===== Module ===== *@
+<div class="accordion-item @GetStatusClass(moduleStatus)">
+<div class="accordion-header" onclick="toggleAccordion('@moduleId')"><span class="toggle-icon" id="@moduleId-icon">▶</span><span class="item-title">@module.ModuleName</span></div>
+<div class="accordion-content" id="@moduleId" style="display: none;">
+@foreach (var lesson in module.Lessons) {
+    var lessonStatus = Model.GetLessonStatus(lesson);
+    var lessonId = $"lesson-{lesson.LessonId}";
+@* ===== Lesson ===== *@
+<div class="accordion-item lesson-level @GetStatusClass(lessonStatus)">
+@if (lesson.Topics.Any()) {
+<div class="accordion-header" onclick="toggleAccordion('@lessonId')"><span class="toggle-icon" id="@lessonId-icon">▶</span><span class="item-title lesson-link">@lesson.LessonTitle</span></div>
+<div class="accordion-content" id="@lessonId" style="display: none;">
+@foreach (var topic in lesson.Topics) {
+    var topicId = $"topic-{topic.TopicId}";
+    var topicStatus = topic.IsRead ? "Completed" : "Unread";
+    var topicUrl = TopicUrlEncoder.Encode(module.ModuleId, lesson.LessonId, topic.TopicId);
+@* ===== Topic (H3) ===== *@
+<div class="accordion-item topic-level @GetStatusClass(topicStatus)">
+<div class="accordion-header">
+@if (topic.SubTopics.Any()) {
+<span class="toggle-icon" id="@topicId-icon" onclick="toggleAccordion('@topicId'); event.stopPropagation();">▶</span>
+}
+else {
+<span class="toggle-icon-spacer"></span>
+}
+<a href="/Lesson/@topicUrl" class="item-title topic-link">@topic.TopicTitle</a>
+</div>
+@if (topic.SubTopics.Any()) {
+<div class="accordion-content" id="@topicId" style="display: none;">
+@foreach (var subTopic in topic.SubTopics) {
+    var subTopicStatus = subTopic.IsRead ? "Completed" : "Unread";
+    var subTopicUrl = TopicUrlEncoder.Encode(module.ModuleId, lesson.LessonId, subTopic.TopicId);
+@* ===== Sub-topic (H4) ===== *@
+<div class="accordion-item subtopic-level @GetStatusClass(subTopicStatus)"><div class="accordion-header"><span class="toggle-icon-spacer"></span><a href="/Lesson/@subTopicUrl" class="item-title subtopic-link">@subTopic.SubTopicTitle</a></div></div>
+}
+</div>
+}
+</div>
+}
+</div>
+}
+else {
+<div class="accordion-header"><span class="toggle-icon-spacer"></span><span class="item-title lesson-link">@lesson.LessonTitle</span></div>
+}
+</div>
+}
+</div></div>
+}
+</div>
+}
+else {
+<div class="empty-state"><p>No lessons available yet. Check back soon!</p></div>
+}
 </div>
 
 @functions {
-    string GetStatusClass(string status)
-    {
-        return status.ToLower() switch
-        {
+    string GetStatusClass(string status) {
+        return status.ToLower() switch {
             "completed" => "status-completed",
-            "partial" => "status-partial",
-            "unread" => "status-unread",
-            _ => "status-unread"
+            "partial"   => "status-partial",
+            "unread"    => "status-unread",
+            _           => "status-unread"
         };
     }
 }
