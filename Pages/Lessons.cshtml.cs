@@ -24,70 +24,74 @@ public class LessonsModel : BasePage
 
         try
         {
-            // Get all lessons with progress using CurrentUserId from BasePage
-            var result = await _lessonService!.GetAllLessonsAsync(CurrentUserId);
+            // Single DB round trip — returns modules, lessons (with progress),
+            // and navigable topics (H3/H4 + H2-when-only-content) as three flat
+            // result sets. Replaces the old 1+N pattern.
+            var result = await _lessonService!.GetAllModulesLessonsTopicsAsync(CurrentUserId);
 
-            if (!result.Success)
+            if (!result.Success || result.Data == null)
             {
                 ErrorMessage = result.Message;
                 return Page();
             }
 
-            // Group lessons by module and load topics for each lesson
+            var tree = result.Data;
+
+            // Pre-bucket topics by lesson so the per-lesson loop is O(1) lookups
+            // rather than repeated scans.
+            var topicsByLesson = tree.Topics
+                .GroupBy(t => t.LessonId)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
             Modules = new List<ModuleWithLessons>();
 
-            var moduleGroups = result.Data!
-                .GroupBy(l => new { l.ModuleId, l.ModuleName })
-                .OrderBy(g => g.Key.ModuleId);
-
-            foreach (var moduleGroup in moduleGroups)
+            foreach (var moduleNode in tree.Modules.OrderBy(m => m.DisplayOrder))
             {
                 var module = new ModuleWithLessons
                 {
-                    ModuleId = moduleGroup.Key.ModuleId,
-                    ModuleName = moduleGroup.Key.ModuleName,
-                    Lessons = new List<LessonWithTopics>()
+                    ModuleId   = moduleNode.ModuleId,
+                    ModuleName = moduleNode.ModuleName,
+                    Lessons    = new List<LessonWithTopics>()
                 };
 
-                foreach (var lesson in moduleGroup.OrderBy(l => l.LessonId))
+                var moduleLessons = tree.Lessons
+                    .Where(l => l.ModuleId == moduleNode.ModuleId)
+                    .OrderBy(l => l.DisplayOrder);
+
+                foreach (var lessonNode in moduleLessons)
                 {
-                    // Get topics for this lesson
-                    var topicsResult = await _lessonService!.GetTopicsByLessonAsync(lesson.LessonId, CurrentUserId);
-                    
                     var lessonWithTopics = new LessonWithTopics
                     {
-                        LessonId = lesson.LessonId,
-                        LessonTitle = lesson.LessonTitle,
-                        FileName = lesson.FileName,
-                        IsRead = lesson.IsRead,
-                        TopicsRead = (short)lesson.TopicsRead,  // Explicit cast
-                        TotalTopics = (short)lesson.TotalTopics,  // Explicit cast
-                        Topics = new List<TopicHierarchy>()
+                        LessonId    = lessonNode.LessonId,
+                        LessonTitle = lessonNode.LessonTitle,
+                        FileName    = lessonNode.FileName,
+                        IsRead      = lessonNode.IsRead,
+                        TopicsRead  = (short)lessonNode.TopicsRead,
+                        TotalTopics = (short)lessonNode.TotalTopics,
+                        Topics      = new List<TopicHierarchy>()
                     };
 
-                    if (topicsResult.Success && topicsResult.Data != null)
+                    if (topicsByLesson.TryGetValue(lessonNode.LessonId, out var lessonTopics))
                     {
                         // Build topic hierarchy (H3 topics with H4 sub-topics)
-                        var h3Topics = topicsResult.Data
+                        var h3Topics = lessonTopics
                             .Where(t => t.HeadingLevel == 3)
                             .OrderBy(t => t.DisplayOrder)
                             .ToList();
 
                         if (h3Topics.Any())
                         {
-                            // Normal case: lesson has H3 topics (possibly with H4 sub-topics)
                             foreach (var h3Topic in h3Topics)
                             {
                                 var topicHierarchy = new TopicHierarchy
                                 {
-                                    TopicId = h3Topic.TopicId,
+                                    TopicId    = h3Topic.TopicId,
                                     TopicTitle = h3Topic.TopicTitle,
-                                    IsRead = h3Topic.IsRead,
-                                    SubTopics = new List<SubTopicInfo>()
+                                    IsRead     = h3Topic.IsRead,
+                                    SubTopics  = new List<SubTopicInfo>()
                                 };
 
-                                // Find H4 sub-topics for this H3
-                                var h4SubTopics = topicsResult.Data
+                                var h4SubTopics = lessonTopics
                                     .Where(t => t.HeadingLevel == 4 && t.ParentTopicId == h3Topic.TopicId)
                                     .OrderBy(t => t.DisplayOrder);
 
@@ -95,9 +99,9 @@ public class LessonsModel : BasePage
                                 {
                                     topicHierarchy.SubTopics.Add(new SubTopicInfo
                                     {
-                                        TopicId = h4Topic.TopicId,
+                                        TopicId       = h4Topic.TopicId,
                                         SubTopicTitle = h4Topic.TopicTitle,
-                                        IsRead = h4Topic.IsRead
+                                        IsRead        = h4Topic.IsRead
                                     });
                                 }
 
@@ -107,9 +111,9 @@ public class LessonsModel : BasePage
                         else
                         {
                             // Single-page lesson: only an H2 topic exists (no H3 breakdown).
-                            // Treat the H2 as the lesson's content target — the lesson title
-                            // will link directly to it instead of being an accordion.
-                            var h2Topic = topicsResult.Data
+                            // The SP already filters H2 to only appear in this case, so any
+                            // H2 we see here is THE content topic for this lesson.
+                            var h2Topic = lessonTopics
                                 .Where(t => t.HeadingLevel == 2)
                                 .OrderBy(t => t.DisplayOrder)
                                 .FirstOrDefault();
@@ -169,7 +173,7 @@ public class LessonsModel : BasePage
             return "Unread";
 
         var completedCount = module.Lessons.Count(l => GetLessonStatus(l) == "Completed");
-        var partialCount = module.Lessons.Count(l => GetLessonStatus(l) == "Partial");
+        var partialCount   = module.Lessons.Count(l => GetLessonStatus(l) == "Partial");
 
         // All lessons completed
         if (completedCount == module.Lessons.Count)
