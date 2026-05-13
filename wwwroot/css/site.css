@@ -1752,3 +1752,263 @@ div.code-toolbar > .toolbar > .toolbar-item > * {
     background: #007bff !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
 }
+
+/* === Dashboard === */
+/* ----- Reading streak badge ----- */
+
+.streak-badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #ff9a3c, #ff6b35);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+}
+
+/* ----- Multi-row stat cards (Total / Completed / Progress) ----- */
+
+.stat-card.stat-card-rows {
+    text-align: left;
+    padding: 20px;
+}
+
+.stat-card-heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color, #333);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6px 0;
+}
+
+    .stat-row > span {
+        color: var(--text-muted, #6c757d);
+    }
+
+    .stat-row > strong {
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 18px;
+    }
+
+/* ----- Continue Learning grid (also used for the Up Next single card) ----- */
+
+.continue-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.continue-card {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+    display: flex;
+    flex-direction: column;
+}
+
+    /* Up Next variant: green accent distinguishes "start something new" from "resume" */
+    .continue-card.upnext-card {
+        border-left-color: #28a745;
+        background: linear-gradient(135deg, #f8fff9, #f8f9fa);
+    }
+
+.continue-module {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted, #6c757d);
+    margin-bottom: 4px;
+}
+
+.continue-lesson {
+    font-weight: 600;
+    color: var(--text-color, #333);
+    margin-bottom: 8px;
+}
+
+.continue-progress {
+    font-size: 13px;
+    color: var(--text-muted, #6c757d);
+    margin-bottom: 12px;
+}
+
+.continue-btn {
+    font-size: 13px;
+    padding: 8px 12px;
+    align-self: flex-start;
+}
+
+.all-caught-up {
+    text-align: center;
+    font-size: 16px;
+    color: var(--text-muted, #6c757d);
+    padding: 16px 0;
+}
+
+/* ----- Module Progress list -----
+   NB: class names intentionally prefixed with `module-progress-` to
+   avoid colliding with the lessons-page .module-name rule (which has
+   status-color descendant selectors that would silently affect us). */
+
+.module-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.module-progress-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.module-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+    .module-progress-label .module-progress-name {
+        color: var(--text-color, #333);
+        font-weight: 500;
+        flex: 1;
+    }
+
+    .module-progress-label .module-progress-stats {
+        color: var(--text-muted, #6c757d);
+        font-variant-numeric: tabular-nums;
+    }
+
+/* ----- Recent Activity list ----- */
+
+.recent-activity-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.recent-activity-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 4px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid #eee;
+    transition: background 0.15s;
+}
+
+    .recent-activity-row:last-child {
+        border-bottom: none;
+    }
+
+    .recent-activity-row:hover {
+        background: #f8f9fa;
+    }
+
+.recent-activity-text {
+    min-width: 0; /* allow truncation in narrow viewports */
+    flex: 1;
+}
+
+.recent-topic {
+    font-weight: 500;
+    color: var(--text-color, #333);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recent-context {
+    font-size: 12px;
+    color: var(--text-muted, #6c757d);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.recent-date {
+    font-size: 12px;
+    color: var(--text-muted, #6c757d);
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ----- Quiz Activity ----- */
+
+.quiz-last-attempt {
+    background: #f8f9fa;
+    border-left: 4px solid var(--primary-color);
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.quiz-last-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted, #6c757d);
+    margin-bottom: 4px;
+}
+
+.quiz-last-title {
+    font-weight: 600;
+    color: var(--text-color, #333);
+    margin-bottom: 4px;
+}
+
+.quiz-last-meta {
+    font-size: 13px;
+    color: var(--text-muted, #6c757d);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.quiz-last-score {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.quiz-last-incomplete {
+    color: #ff8c00;
+    font-weight: 500;
+}
+
+.quiz-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+.quiz-stat {
+    text-align: center;
+    padding: 14px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.quiz-stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.quiz-stat-label {
+    font-size: 13px;
+    color: var(--text-muted, #6c757d);
+    margin-top: 4px;
+}

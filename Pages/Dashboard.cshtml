@@ -1,4 +1,5 @@
 @page
+@using VexTrainerWeb.Utilities
 @model VexTrainerWeb.Pages.DashboardModel
 @{
     ViewData["Title"] = "Dashboard";
@@ -8,82 +9,208 @@
     <div class="dashboard-header">
         <h1>Welcome back, @User.Identity?.Name! 👋</h1>
         <p class="text-muted">Continue your PROS programming journey</p>
+@if (Model.Dashboard != null && Model.Dashboard.Stats.ReadingStreak > 0)
+{
+        var streak = Model.Dashboard.Stats.ReadingStreak;
+<div class="streak-badge">🔥 @streak-day reading streak</div>
+}
     </div>
 
-    <div class="dashboard-stats">
-        <div class="stat-card">
-            <div class="stat-value">0</div>
-            <div class="stat-label">Lessons Completed</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">25</div>
-            <div class="stat-label">Total Lessons</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value">0%</div>
-            <div class="stat-label">Progress</div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">Quick Actions</div>
-        <div class="card-body">
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <a href="/Lessons" class="btn btn-primary">Browse Lessons</a>
-                <a href="/Profile" class="btn btn-secondary">Edit Profile</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">Start Learning</div>
-        <div class="card-body">
-            <div class="card-grid">
-                <div class="module-card">
-                    <div class="module-icon">📚</div>
-                    <div class="module-title">PROS Fundamentals</div>
-                    <div class="module-description">Start with the basics</div>
-                    <div class="module-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 0%"></div>
-                        </div>
-                        <span>0%</span>
-                    </div>
-                </div>
-                <div class="module-card">
-                    <div class="module-icon">⚙️</div>
-                    <div class="module-title">Hardware & Sensors</div>
-                    <div class="module-description">Control motors and sensors</div>
-                    <div class="module-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 0%"></div>
-                        </div>
-                        <span>0%</span>
-                    </div>
-                </div>
-                <div class="module-card">
-                    <div class="module-icon">🤖</div>
-                    <div class="module-title">Autonomous Programming</div>
-                    <div class="module-description">Build autonomous routines</div>
-                    <div class="module-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 0%"></div>
-                        </div>
-                        <span>0%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">📱 Get More with Mobile App</div>
-        <div class="card-body">
-            <p>Take quizzes, track progress, and earn achievements with our mobile app!</p>
-            <div style="margin-top: 15px; display: flex; gap: 15px;">
-                <a href="#" class="app-badge">🍎 iOS</a>
-                <a href="#" class="app-badge">🤖 Android</a>
-            </div>
-        </div>
-    </div>
+@if (Model.ErrorMessage != null)
+{
+<div class="alert alert-error">@Model.ErrorMessage</div>
+}
+else if (Model.Dashboard != null)
+{
+    var s = Model.Dashboard.Stats;
+@* ===== Top stat cards: Total / Completed / Progress ===== *@
+<div class="dashboard-stats">
+<div class="stat-card stat-card-rows">
+<div class="stat-card-heading">Total</div>
+<div class="stat-row"><span>Modules</span><strong>@s.TotalModules</strong></div>
+<div class="stat-row"><span>Lessons</span><strong>@s.TotalLessons</strong></div>
+<div class="stat-row"><span>Topics</span><strong>@s.TotalTopics</strong></div>
 </div>
+<div class="stat-card stat-card-rows">
+<div class="stat-card-heading">Completed</div>
+<div class="stat-row"><span>Modules</span><strong>@s.CompletedModules</strong></div>
+<div class="stat-row"><span>Lessons</span><strong>@s.CompletedLessons</strong></div>
+<div class="stat-row"><span>Topics</span><strong>@s.TopicsRead</strong></div>
+</div>
+<div class="stat-card stat-card-rows">
+<div class="stat-card-heading">Progress</div>
+<div class="stat-row"><span>Modules</span><strong>@s.ModulesProgressPercent%</strong></div>
+<div class="stat-row"><span>Lessons</span><strong>@s.LessonsProgressPercent%</strong></div>
+<div class="stat-row"><span>Topics</span><strong>@s.TopicsProgressPercent%</strong></div>
+</div>
+</div>
+
+@* ===== Continue Learning ===== *@
+<div class="card">
+<div class="card-header">Continue Learning</div>
+<div class="card-body">
+@if (Model.Dashboard.ContinueLearning.Any())
+{
+<div class="continue-grid">
+@foreach (var item in Model.Dashboard.ContinueLearning)
+{
+    var url = TopicUrlEncoder.Encode(item.ModuleId, item.LessonId, item.NextTopicId);
+<div class="continue-card">
+<div class="continue-module">@item.ModuleName</div>
+<div class="continue-lesson">@item.LessonTitle</div>
+<div class="continue-progress">@item.TopicsRead / @item.TotalTopics topics read</div>
+<a href="/Lesson/@url" class="btn btn-primary continue-btn">Next: @item.NextTopicTitle →</a>
+</div>
+}
+</div>
+}
+else if (Model.Dashboard.UpNext != null)
+{
+    var un = Model.Dashboard.UpNext;
+    var unUrl = TopicUrlEncoder.Encode(un.ModuleId, un.LessonId, un.FirstTopicId);
+<div class="continue-grid">
+<div class="continue-card upnext-card">
+<div class="continue-module">Up next • @un.ModuleName</div>
+<div class="continue-lesson">@un.LessonTitle</div>
+<div class="continue-progress">Start fresh — this lesson hasn't been opened yet.</div>
+<a href="/Lesson/@unUrl" class="btn btn-primary continue-btn">Start: @un.FirstTopicTitle →</a>
+</div>
+</div>
+}
+else
+{
+<p class="all-caught-up">🎉 You're all caught up! Every lesson has been completed.</p>
+}
+</div>
+</div>
+
+@* ===== Module Progress ===== *@
+@if (Model.Dashboard.ModuleProgress.Any())
+{
+<div class="card">
+<div class="card-header">Module Progress</div>
+<div class="card-body">
+<div class="module-progress-list">
+@foreach (var mp in Model.Dashboard.ModuleProgress)
+{
+<div class="module-progress-row">
+<div class="module-progress-label">
+<span class="module-progress-name">@mp.ModuleName</span>
+<span class="module-progress-stats">@mp.LessonsRead / @mp.TotalLessons</span>
+</div>
+<div class="progress-bar">
+<div class="progress-fill" style="width: @(mp.ProgressPercent.ToString("0"))%"></div>
+</div>
+</div>
+}
+</div>
+</div>
+</div>
+}
+
+@* ===== Recent Activity ===== *@
+@if (Model.Dashboard.RecentActivity.Any())
+{
+<div class="card">
+<div class="card-header">Recent Activity</div>
+<div class="card-body">
+<div class="recent-activity-list">
+@foreach (var ra in Model.Dashboard.RecentActivity)
+{
+    var raUrl = TopicUrlEncoder.Encode(ra.ModuleId, ra.LessonId, ra.TopicId);
+<a href="/Lesson/@raUrl" class="recent-activity-row">
+<div class="recent-activity-text">
+<div class="recent-topic">@ra.TopicTitle</div>
+<div class="recent-context">@ra.LessonTitle • @ra.ModuleName</div>
+</div>
+<div class="recent-date">@FormatRelativeDate(ra.ReadDate)</div>
+</a>
+}
+</div>
+</div>
+</div>
+}
+
+@* ===== Quick Actions ===== *@
+<div class="card">
+<div class="card-header">Quick Actions</div>
+<div class="card-body">
+<div style="display: flex; gap: 15px; flex-wrap: wrap;">
+<a href="/Lessons" class="btn btn-primary">Browse Lessons</a>
+<a href="/Profile" class="btn btn-secondary">Edit Profile</a>
+</div>
+</div>
+</div>
+
+@* ===== Quiz Activity ===== *@
+<div class="card">
+<div class="card-header">Quiz Activity</div>
+<div class="card-body">
+@if (Model.Dashboard.LastQuizAttempt != null)
+{
+    var lq = Model.Dashboard.LastQuizAttempt;
+<div class="quiz-last-attempt">
+<div class="quiz-last-label">Last attempt</div>
+<div class="quiz-last-title">@lq.QuizTitle</div>
+<div class="quiz-last-meta">
+@if (lq.IsCompleted)
+{
+<span class="quiz-last-score">Score: @(lq.Score?.ToString("0.#"))%</span>
+<span>@FormatRelativeDate(lq.CompletedDate ?? lq.StartedDate)</span>
+}
+else
+{
+<span class="quiz-last-incomplete">In progress · @FormatRelativeDate(lq.StartedDate)</span>
+}
+</div>
+</div>
+}
+@if (s.QuizzesAttempted > 0)
+{
+<div class="quiz-stats-grid">
+<div class="quiz-stat"><div class="quiz-stat-value">@s.QuizzesAttempted</div><div class="quiz-stat-label">Attempted</div></div>
+<div class="quiz-stat"><div class="quiz-stat-value">@s.QuizzesCompleted</div><div class="quiz-stat-label">Completed</div></div>
+<div class="quiz-stat"><div class="quiz-stat-value">@s.AverageQuizScore.ToString("0.#")%</div><div class="quiz-stat-label">Average Score</div></div>
+<div class="quiz-stat"><div class="quiz-stat-value">@s.BestQuizScore.ToString("0.#")%</div><div class="quiz-stat-label">Best Score</div></div>
+</div>
+}
+else
+{
+<p class="text-muted">No quiz attempts yet. Quiz performance will appear here once you take one.</p>
+}
+</div>
+</div>
+
+@* ===== Mobile app promo (unchanged) ===== *@
+<div class="card">
+<div class="card-header">📱 Get More with Mobile App</div>
+<div class="card-body">
+<p>Take quizzes, track progress, and earn achievements with our mobile app!</p>
+<div style="margin-top: 15px; display: flex; gap: 15px;">
+<a href="#" class="app-badge">🍎 iOS</a>
+<a href="#" class="app-badge">🤖 Android</a>
+</div>
+</div>
+</div>
+}
+</div>
+
+@functions {
+    string FormatRelativeDate(DateTime utcDate)
+    {
+        // Treat the value as UTC regardless of how SQL Server reported the Kind,
+        // then compare against the current UTC clock.
+        var utc   = DateTime.SpecifyKind(utcDate, DateTimeKind.Utc);
+        var delta = DateTime.UtcNow - utc;
+
+        if (delta.TotalSeconds < 60)  return "just now";
+        if (delta.TotalMinutes < 60)  return $"{(int)delta.TotalMinutes} min ago";
+        if (delta.TotalHours   < 24)  return $"{(int)delta.TotalHours} hr ago";
+        if (delta.TotalDays    < 7)
+        {
+            var days = (int)delta.TotalDays;
+            return days == 1 ? "yesterday" : $"{days} days ago";
+        }
+        return utc.ToString("MMM d");
+    }
+}
