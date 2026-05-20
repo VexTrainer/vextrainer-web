@@ -61,7 +61,7 @@ builder.Services.AddSingleton<PasswordService>();
 
 // Register web-specific services
 builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<ConfirmationTokenService>();
+//builder.Services.AddScoped<ConfirmationTokenService>();
 
 // Session support
 builder.Services.AddDistributedMemoryCache();
