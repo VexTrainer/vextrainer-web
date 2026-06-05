@@ -2012,3 +2012,455 @@ div.code-toolbar > .toolbar > .toolbar-item > * {
     color: var(--text-muted, #6c757d);
     margin-top: 4px;
 }
+/* Markdown-rendered content pages (About, Privacy, etc.) */
+.content-page {
+    max-width: 900px;
+    padding: 30px 20px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.75;
+    letter-spacing: -0.003em;
+}
+
+    .content-page h1 {
+        font-size: 2em;
+        color: var(--text-color);
+        margin-bottom: 0.3em;
+    }
+
+        /* First paragraph after H1 acts as the subtitle (replaces the old <p class="subtitle"> look) */
+        .content-page h1 + p {
+            font-size: 1.1em;
+            color: var(--text-muted);
+            margin-bottom: 2em;
+        }
+
+    .content-page h2 {
+        color: var(--text-color);
+        font-size: 24px;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+        margin-top: 40px;
+        margin-bottom: 15px;
+    }
+
+    .content-page h3 {
+        color: var(--text-color);
+        font-size: 18px;
+        margin-top: 25px;
+        margin-bottom: 12px;
+    }
+
+    .content-page p {
+        margin-bottom: 15px;
+    }
+
+    .content-page ul,
+    .content-page ol {
+        margin-left: 30px;
+        margin-bottom: 15px;
+    }
+
+    .content-page li {
+        margin-bottom: 8px;
+    }
+
+    /* Ordinary links inherit color from the global `a` rule (line 61, var(--primary-color)).
+   We only add underline-on-hover. Links that opt into .btn / .btn-primary via the markdown
+   attribute syntax {.btn .btn-primary} are excluded so the existing button styles apply cleanly. */
+    .content-page a:not(.btn):hover {
+        text-decoration: underline;
+    }
+
+    /* Tables (markdown pipe-table syntax) */
+    .content-page table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    .content-page th {
+        background: var(--primary-color);
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .content-page td {
+        padding: 12px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .content-page tbody tr:nth-child(even) {
+        background: var(--light-color);
+    }
+
+    .content-page tbody tr:hover {
+        background: #e9ecef;
+    }
+
+    /* Inline code and code fences — match .lesson-viewer .lesson-content's look (line 1232) */
+    .content-page code {
+        background: var(--light-color);
+        padding: 2px 6px;
+        border-radius: 3px;
+    }
+
+    .content-page pre {
+        background: var(--light-color);
+        padding: 15px;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin: 15px 0;
+    }
+
+    .content-page pre code {
+            background: transparent;
+            padding: 0;
+    }
+
+/* Streak badge as link */
+.streak-badge-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .streak-badge-link:hover {
+        opacity: 0.85;
+    }
+
+.streak-badge-zero {
+    background: #f0f0f0;
+    color: #888;
+}
+
+/* Streak report page */
+.streak-day-section {
+    margin-bottom: 1rem;
+}
+
+.streak-day-header {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.4rem;
+}
+
+.streak-section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 0.05em;
+    margin: 0.5rem 0 0.25rem;
+}
+
+.streak-module-card {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+}
+
+.streak-module-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.streak-lesson-block {
+    padding-left: 10px;
+    margin-bottom: 4px;
+}
+
+.streak-lesson-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.streak-topic-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 1px 0 1px 12px;
+    font-size: 0.8rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+    .streak-topic-row:hover {
+        color: var(--primary);
+    }
+
+.streak-bullet {
+    color: var(--primary);
+}
+
+.streak-quiz-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0;
+    font-size: 0.85rem;
+}
+
+.streak-quiz-title {
+    flex: 1;
+}
+
+.streak-quiz-score {
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.score-pass {
+    color: #2e7d32;
+}
+
+.score-fail {
+    color: #b71c1c;
+}
+
+.score-incomplete {
+    color: #888;
+}
+
+.streak-day-divider {
+    margin: 1rem 0 0.75rem;
+    border-color: #e0e0e0;
+}
+
+/* Lesson bookmark button */
+.lesson-nav-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+    .btn-outline:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+.btn-warning {
+    background: #ff9800;
+    color: white;
+    border: none;
+}
+
+.btn-warning:hover {
+    background: #e65100;
+}
+/*  A: Bookmark button  */
+.btn-bookmark {
+    background: #fff3e0;
+    border: 2px solid #e65100;
+    color: #e65100;
+    min-width: 130px;
+}
+
+    .btn-bookmark:hover {
+        background: #ffe0b2;
+    }
+
+    .btn-bookmark.btn-bookmark-active {
+        background: #e65100;
+        color: #fff;
+        border-color: #e65100;
+    }
+
+        .btn-bookmark.btn-bookmark-active:hover {
+            background: #bf360c;
+        }
+
+/*  B: Breadcrumb gap  */
+.breadcrumb-nav {
+    margin-top: 0.35rem;
+    padding-top: 0;
+}
+
+/*  C + E: Lesson content heading gaps  */
+.lesson-content h1,
+.lesson-content h2,
+.lesson-content h3,
+.lesson-content h4 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.35rem;
+}
+
+    .lesson-content h1:first-child,
+    .lesson-content h2:first-child,
+    .lesson-content h3:first-child {
+        margin-top: 0.25rem; /* C: first heading closer to breadcrumb */
+    }
+
+/*  D: Lesson heading font sizes  */
+.lesson-content h1 {
+    font-size: 1.45rem;
+}
+
+.lesson-content h2 {
+    font-size: 1.25rem;
+}
+
+.lesson-content h3 {
+    font-size: 1.1rem;
+}
+
+.lesson-content h4 {
+    font-size: 1rem;
+}
+
+/*  F: Bottom nav gap  */
+.lesson-navigation {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+}
+
+/*  Lesson nav actions (bookmark + mark complete stacked)  */
+.lesson-nav-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+/*  G: Subtitle row with streak badge inline  */
+.dashboard-subtitle-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+    .dashboard-subtitle-row .text-muted {
+        margin: 0;
+    }
+
+/*  H/I: Clickable row indicator  */
+.clickable-row {
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+
+    .clickable-row:hover {
+        background: #f5f5f5;
+    }
+
+.row-arrow {
+    color: #aaa;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/*  J: Collapsible Module Progress  */
+.card-collapsible {
+    border: none;
+    padding: 0;
+}
+
+    .card-collapsible > summary {
+        list-style: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        user-select: none;
+    }
+
+        .card-collapsible > summary::-webkit-details-marker {
+            display: none;
+        }
+
+.collapse-indicator::before {
+    content: '▸';
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.card-collapsible[open] .collapse-indicator::before {
+    content: '▾';
+}
+
+.card-header-summary {
+    border-radius: 8px;
+    transition: border-radius 0.15s;
+}
+
+.card-collapsible[open] .card-header-summary {
+    border-radius: 8px 8px 0 0;
+}
+
+/*  K: Side-by-side cards  */
+.side-by-side-cards {
+    display: flex;
+    gap: 16px;
+}
+
+    .side-by-side-cards .card {
+        flex: 1;
+        min-width: 0;
+    }
+
+@media (max-width: 600px) {
+    .side-by-side-cards {
+        flex-direction: column;
+    }
+}
+
+/*  Streak badge variants  */
+.streak-badge-link {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .streak-badge-link:hover {
+        opacity: 0.85;
+    }
+
+.streak-badge-zero {
+    background: #f0f0f0;
+    color: #888;
+    border-color: #ccc;
+}
+
+/*  Lesson viewer container padding  */
+.lesson-container,
+.lesson-content-wrapper,
+#lessonContent {
+    padding-top: 0.5rem;
+    padding-bottom: 0.75rem;
+}
+
+/*  h3 / h4 tighter spacing  */
+.lesson-content h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.2rem;
+}
+
+.lesson-content h4 {
+    margin-top: 0.4rem;
+    margin-bottom: 0.15rem;
+}
+
+/*  Revert dashboard subtitle to centered paragraph  */
+.dashboard-subtitle-row {
+    display: block; /* undo the flex row */
+    text-align: center;
+}
+
+    .dashboard-subtitle-row .streak-badge {
+        display: inline-block;
+        margin-top: 6px;
+    }

@@ -9,7 +9,18 @@
         <div class="header-left">
             @if (isAuthenticated)
             {
-                <span class="page-title">@currentPage</span>
+                @if (ViewData["StreakBadge"] != null)
+                {
+                    var _streak = ViewData["StreakBadge"] as int? ?? 0;
+                    <a href="/StreakReport" id="streakBadgeLink"
+                       class="streak-badge streak-badge-link @(_streak == 0 ? "streak-badge-zero" : "")">
+                        🔥 @_streak-day streak
+                    </a>
+                }
+                else
+                {
+                    <span class="page-title">@currentPage</span>
+                }
             }
         </div>
         
@@ -70,4 +81,10 @@
             <button type="button" class="alert-close" onclick="this.parentElement.remove()">×</button>
         </div>
     }
+<script>
+(function() {
+    var link = document.getElementById('streakBadgeLink');
+    if (link) link.href = '/StreakReport?tz=' + (-new Date().getTimezoneOffset());
+})();
+</script>
 </header>

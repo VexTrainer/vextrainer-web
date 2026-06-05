@@ -88,7 +88,11 @@ else
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+// app.UseStaticFiles();
+var contentTypeProvider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
+contentTypeProvider.Mappings[".md"] = "text/markdown";
+app.UseStaticFiles(new StaticFileOptions { ContentTypeProvider = contentTypeProvider });
+
 app.UseRouting();
 
 app.UseSession();
