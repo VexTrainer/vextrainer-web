@@ -21,11 +21,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
     
     <!-- Email sending -->
-    <PackageReference Include="MailKit" Version="4.3.0" />
+    <PackageReference Include="MailKit" Version="4.16.0" />
     
     <!-- Markdown rendering -->
     <PackageReference Include="Markdig" Version="0.34.0" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="10.0.8" />
   </ItemGroup>
 
 </Project>
