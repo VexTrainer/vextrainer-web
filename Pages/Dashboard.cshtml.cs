@@ -16,6 +16,7 @@ public class DashboardModel : BasePage
     protected override bool RequiresAuthentication => true;
 
     public UserWebDashboard? Dashboard    { get; set; }
+    public List<VexTrainer.Data.Models.Bookmark> Bookmarks { get; set; } = new();
     public string?           ErrorMessage { get; set; }
 
     public async Task<IActionResult> OnGetAsync()
@@ -29,6 +30,16 @@ public class DashboardModel : BasePage
                 return Page();
             }
             Dashboard = result.Data;
+
+            // Load bookmarks separately (may also be in web dashboard proc result set)
+            try
+            {
+                var bookmarksResult = await _lessonService!.GetBookmarksAsync(CurrentUserId);
+                if (bookmarksResult.Success && bookmarksResult.Data != null)
+                    Bookmarks = bookmarksResult.Data;
+            }
+            catch { /* non-fatal — dashboard still renders without bookmarks */ }
+
             return Page();
         }
         catch (Exception ex)

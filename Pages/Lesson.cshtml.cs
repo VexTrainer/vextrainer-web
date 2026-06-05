@@ -32,6 +32,7 @@ public class LessonModel : BasePage
     public string LessonTitle { get; set; } = "";
     public string? ParentTopicTitle { get; set; }
     
+    public bool    IsBookmarked { get; set; }
     public string? ErrorMessage { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string fileName)
@@ -103,10 +104,11 @@ public class LessonModel : BasePage
             var topic = result.Data;
 
             // Set topic details
-            TopicTitle = topic.TopicTitle;
-            ModuleName = topic.ModuleName;
-            LessonTitle = topic.LessonTitle;
+            TopicTitle       = topic.TopicTitle;
+            ModuleName       = topic.ModuleName;
+            LessonTitle      = topic.LessonTitle;
             ParentTopicTitle = topic.ParentTopicTitle;
+            IsBookmarked     = topic.IsBookmarked;
 
             // Set navigation with encoded URLs
             if (topic.PreviousTopicId.HasValue && !string.IsNullOrEmpty(topic.PreviousFileName))
@@ -239,9 +241,47 @@ public class LessonModel : BasePage
             };
         }
     }
+
+    // Handler to toggle bookmark
+    public async Task<IActionResult> OnPostToggleBookmarkAsync([FromBody] ToggleBookmarkRequest request)
+    {
+        try
+        {
+            if (!IsAuthenticated)
+                return new JsonResult(new { success = false, message = "Not authenticated" }) { StatusCode = 401 };
+
+            if (request.TopicId <= 0)
+                return new JsonResult(new { success = false, message = "Invalid topic ID" }) { StatusCode = 400 };
+
+            bool nowBookmarked;
+            bool success;
+
+            if (request.IsBookmarked)
+            {
+                // Currently bookmarked — remove it
+                var result = await _lessonService!.DeleteBookmarkAsync(CurrentUserId, request.TopicId);
+                success       = result.Success;
+                nowBookmarked = false;
+            }
+            else
+            {
+                // Not bookmarked — add it
+                var result = await _lessonService!.AddBookmarkAsync(CurrentUserId, request.TopicId);
+                success       = result.Success;
+                nowBookmarked = true;
+            }
+
+            return new JsonResult(new { success, isBookmarked = nowBookmarked });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error toggling bookmark: {ex.Message}");
+            return new JsonResult(new { success = false, message = "Error toggling bookmark" }) { StatusCode = 500 };
+        }
+    }
 }
 
-/// <summary>
+/// <summary>/// <summary>
 /// Topic navigation info (prev/next)
 /// </summary>
 public class TopicNavigation
@@ -257,4 +297,13 @@ public class TopicNavigation
 public class MarkTopicReadRequest
 {
     public int TopicId { get; set; }
+}
+
+/// <summary>
+/// Request to toggle a topic bookmark
+/// </summary>
+public class ToggleBookmarkRequest
+{
+    public int  TopicId     { get; set; }
+    public bool IsBookmarked { get; set; }  // current state before toggle
 }

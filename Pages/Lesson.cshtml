@@ -60,9 +60,18 @@ else
                 <div class="nav-btn-spacer"></div>
             }
 
-            <button id="markCompleteBtn" class="btn btn-success">
-                Mark as Complete
-            </button>
+            <div class="lesson-nav-actions">
+                <button id="markCompleteBtn" class="btn btn-success">
+                    Mark as Complete
+                </button>
+                <button id="bookmarkBtn"
+                        class="btn btn-bookmark @(Model.IsBookmarked ? "btn-bookmark-active" : "")"
+                        data-topic-id="@Model.TopicId"
+                        data-bookmarked="@Model.IsBookmarked.ToString().ToLower()"
+                        title="@(Model.IsBookmarked ? "Remove bookmark" : "Bookmark this topic")">
+                    @(Model.IsBookmarked ? "🔖 Bookmarked" : "☆ Bookmark")
+                </button>
+            </div>
 
             @if (Model.NextTopic != null)
             {
@@ -118,5 +127,44 @@ else
     } else {
         initLesson();
     }
+})();
+</script>
+
+<script>
+(function () {
+    var btn = document.getElementById('bookmarkBtn');
+    if (!btn) return;
+
+    btn.addEventListener('click', async function () {
+        var topicId    = parseInt(btn.dataset.topicId);
+        var bookmarked = btn.dataset.bookmarked === 'true';
+        var token      = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        if (!token) return;
+
+        btn.disabled = true;
+
+        try {
+            var res = await fetch('?handler=ToggleBookmark', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ topicId: topicId, isBookmarked: bookmarked })
+            });
+            var data = await res.json();
+            if (data.success) {
+                var nowBookmarked = data.isBookmarked;
+                btn.dataset.bookmarked = nowBookmarked ? 'true' : 'false';
+                btn.textContent   = nowBookmarked ? '🔖 Bookmarked' : '☆ Bookmark';
+                btn.className     = 'btn btn-bookmark' + (nowBookmarked ? ' btn-bookmark-active' : '');
+                btn.title         = nowBookmarked ? 'Remove bookmark' : 'Bookmark this topic';
+            }
+        } catch (e) {
+            console.error('Bookmark toggle failed', e);
+        } finally {
+            btn.disabled = false;
+        }
+    });
 })();
 </script>
