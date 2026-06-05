@@ -1,0 +1,102 @@
+@page
+@using VexTrainerWeb.Utilities
+@model VexTrainerWeb.Pages.StreakReportModel
+@{
+    ViewData["Title"] = "Activity Report";
+}
+
+<div class="container">
+    <div class="dashboard-header">
+        <h1>🔥 Activity Report</h1>
+        <p class="text-muted">Your reading and quiz activity — last 7 active days</p>
+    </div>
+
+@if (Model.ErrorMessage != null)
+{
+    <div class="alert alert-error">@Model.ErrorMessage</div>
+}
+else if (!Model.Days.Any())
+{
+    <div class="card">
+        <div class="card-body">
+            <p class="text-muted" style="text-align:center; padding: 2rem 0;">
+                No activity in the last 7 days. Start reading to build your streak!
+            </p>
+        </div>
+    </div>
+}
+else
+{
+    foreach (var day in Model.Days)
+    {
+    <div class="streak-day-section">
+        <div class="streak-day-header">@day.Label</div>
+
+        @* ── Lessons ──────────────────────────────────────────────── *@
+        @if (day.Modules.Any())
+        {
+        <div class="streak-section-label">📚 LESSONS</div>
+        @foreach (var module in day.Modules)
+        {
+        <div class="streak-module-card">
+            <div class="streak-module-name">@module.ModuleName</div>
+            @foreach (var lesson in module.Lessons)
+            {
+            <div class="streak-lesson-block">
+                <div class="streak-lesson-title">@lesson.LessonTitle</div>
+                @foreach (var topic in lesson.Topics)
+                {
+                    var url = TopicUrlEncoder.Encode(module.ModuleId, lesson.LessonId, topic.TopicId);
+                <a href="/Lesson/@url" class="streak-topic-row">
+                    <span class="streak-bullet">•</span>
+                    <span>@topic.TopicTitle</span>
+                </a>
+                }
+            </div>
+            }
+        </div>
+        }
+        }
+
+        @* ── Quizzes ──────────────────────────────────────────────── *@
+        @if (day.Quizzes.Any())
+        {
+        <div class="streak-section-label">🎯 QUIZZES</div>
+        @foreach (var quiz in day.Quizzes)
+        {
+            var title = quiz.AttemptCount > 1
+                ? $"{quiz.QuizTitle} ({quiz.AttemptCount}x)"
+                : quiz.QuizTitle;
+        <div class="streak-quiz-row">
+            <span class="streak-quiz-icon">@(quiz.IsCompleted ? "✅" : "⭕")</span>
+            <span class="streak-quiz-title">@title</span>
+            <span class="streak-quiz-score @(quiz.IsCompleted ? (quiz.BestScore >= 70 ? "score-pass" : "score-fail") : "score-incomplete")">
+                @if (quiz.IsCompleted && quiz.BestScore.HasValue)
+                {
+                    @($"{quiz.BestScore:0}%")
+                }
+                else
+                {
+                    @:Incomplete
+                }
+            </span>
+        </div>
+        }
+        }
+    </div>
+    <hr class="streak-day-divider" />
+    }
+}
+</div>
+
+@* On first load (no ?tz= param), redirect with the browser's UTC offset *@
+<script>
+(function () {
+    var url = new URL(window.location.href);
+    if (!url.searchParams.has('tz')) {
+        // JS getTimezoneOffset() returns minutes to subtract; we need minutes to add
+        url.searchParams.set('tz', -new Date().getTimezoneOffset());
+        window.location.replace(url.toString());
+    }
+})();
+</script>
