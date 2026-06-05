@@ -1,12 +1,26 @@
+using VexTrainerWeb.Utilities;
+
 namespace VexTrainerWeb.Pages;
 
 public class AboutModel : BasePage
 {
-    // Override to allow public access - no authentication required
-    protected override bool RequiresAuthentication { get { return false; } }
+    private readonly IWebHostEnvironment _env;
 
-    public void OnGet()
+    public AboutModel(IWebHostEnvironment env)
     {
-        // Simple page, no data needed
+        _env = env;
+    }
+
+    // Override to allow public access - no authentication required
+    protected override bool RequiresAuthentication => false;
+
+    public string  ContentHtml  { get; private set; } = "";
+    public string? ErrorMessage { get; private set; }
+
+    public async Task OnGetAsync()
+    {
+        var (html, error) = await MarkdownPageRenderer.RenderAsync(_env, "about.md");
+        ContentHtml  = html;
+        ErrorMessage = error;
     }
 }
