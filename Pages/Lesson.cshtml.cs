@@ -33,6 +33,7 @@ public class LessonModel : BasePage
     public string? ParentTopicTitle { get; set; }
     
     public bool    IsBookmarked { get; set; }
+    public bool    IsRead       { get; set; }
     public string? ErrorMessage { get; set; }
 
     public async Task<IActionResult> OnGetAsync(string fileName)
@@ -109,6 +110,7 @@ public class LessonModel : BasePage
             LessonTitle      = topic.LessonTitle;
             ParentTopicTitle = topic.ParentTopicTitle;
             IsBookmarked     = topic.IsBookmarked;
+            IsRead           = topic.IsRead;
 
             // Set navigation with encoded URLs
             if (topic.PreviousTopicId.HasValue && !string.IsNullOrEmpty(topic.PreviousFileName))

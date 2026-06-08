@@ -61,8 +61,11 @@ else
             }
 
             <div class="lesson-nav-actions">
-                <button id="markCompleteBtn" class="btn btn-success">
-                    Mark as Complete
+                <button id="markCompleteBtn"
+                        class="btn @(Model.IsRead ? "btn-secondary" : "btn-success")"
+                        data-is-read="@Model.IsRead.ToString().ToLower()"
+                        @(Model.IsRead ? "disabled" : "")>
+                    @(Model.IsRead ? "✓ Completed" : "Mark as Complete")
                 </button>
                 <button id="bookmarkBtn"
                         class="btn btn-bookmark @(Model.IsBookmarked ? "btn-bookmark-active" : "")"
