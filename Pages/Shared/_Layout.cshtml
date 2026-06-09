@@ -11,14 +11,11 @@
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <partial name="_Header" />
-    
+    <partial name="_Header" />    
     <main role="main" class="main-content">
         @RenderBody()
-    </main>
-    
-    <partial name="_Footer" />
-    
+    </main>    
+    <partial name="_Footer" />    
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
