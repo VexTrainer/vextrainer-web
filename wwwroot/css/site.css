@@ -23,6 +23,7 @@ a { color: var(--primary-color); text-decoration: none; transition: color 0.3s; 
 a:hover { color: var(--primary-dark); }
 
 /* ===== Header Styles ===== */
+.header-logo { width: 36px; height: 36px; object-fit: contain; }
 .site-header { background: white; box-shadow: var(--shadow); position: sticky; top: 0; z-index: 1000; }
 .header-container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
 .header-left { flex: 1; }
