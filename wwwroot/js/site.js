@@ -697,10 +697,12 @@ VexTrainer.LessonContent = {
             console.log('Mark complete result:', result);
             
             if (result.success) {
-                btn.textContent = '✓ Completed';
-                btn.classList.remove('btn-success');
-                btn.classList.add('btn-secondary');
-                
+                // Update to completed icon state (stroke circle+check, green)
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/></svg>';
+                btn.classList.add('nav-icon-btn--done');
+                btn.disabled = true;
+                btn.title = 'Completed';
+
                 // Redirect to next topic if available
                 if (this.config.hasNextTopic && this.config.nextTopicUrl) {
                     setTimeout(() => {

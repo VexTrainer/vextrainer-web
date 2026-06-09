@@ -48,9 +48,21 @@ public class ContactModel : BasePage
         }
     }
 
-    public void OnGet()
+    public void OnGet(string? module = null, string? lesson = null, string? topic = null)
     {
-        // Just display the form - no authentication required
+        // When arriving from a lesson page feedback button, pre-fill context
+        if (module != null || lesson != null || topic != null)
+        {
+            Category = "Correction";
+            var lines = new System.Collections.Generic.List<string>();
+            if (!string.IsNullOrEmpty(module))  lines.Add($"Module:  {module}");
+            if (!string.IsNullOrEmpty(lesson))  lines.Add($"Lesson:  {lesson}");
+            if (!string.IsNullOrEmpty(topic))   lines.Add($"Topic:   {topic}");
+            lines.Add("");
+            lines.Add("Correction or suggestion:");
+            lines.Add("");
+            Message = string.Join(Environment.NewLine, lines);
+        }
     }
 
     public async Task<IActionResult> OnPostAsync()

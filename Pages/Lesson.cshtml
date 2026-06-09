@@ -48,9 +48,8 @@ else
             @if (Model.PreviousTopic != null)
             {
                 <a href="/Lesson/@Model.PreviousTopic.FileName" class="nav-btn prev">
-                    <span class="nav-arrow">←</span>
                     <span class="nav-text">
-                        <span class="nav-label">Previous</span>
+                        <span class="nav-label">← Previous</span>
                         <span class="nav-title">@Model.PreviousTopic.TopicTitle</span>
                     </span>
                 </a>
@@ -61,29 +60,57 @@ else
             }
 
             <div class="lesson-nav-actions">
+
+                @* ── Mark as Complete ── *@
                 <button id="markCompleteBtn"
-                        class="btn @(Model.IsRead ? "btn-secondary" : "btn-success")"
+                        class="nav-icon-btn @(Model.IsRead ? "nav-icon-btn--done" : "")"
                         data-is-read="@Model.IsRead.ToString().ToLower()"
-                        @(Model.IsRead ? "disabled" : "")>
-                    @(Model.IsRead ? "✓ Completed" : "Mark as Complete")
+                        @(Model.IsRead ? "disabled" : "")
+                        title="@(Model.IsRead ? "Completed" : "Mark as Complete")">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" aria-hidden="true">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14M22 4L12 14.01l-3-3"/>
+                    </svg>
                 </button>
+
+                @* ── Bookmark ── *@
                 <button id="bookmarkBtn"
-                        class="btn btn-bookmark @(Model.IsBookmarked ? "btn-bookmark-active" : "")"
+                        class="nav-icon-btn @(Model.IsBookmarked ? "nav-icon-btn--bookmarked" : "")"
                         data-topic-id="@Model.TopicId"
                         data-bookmarked="@Model.IsBookmarked.ToString().ToLower()"
                         title="@(Model.IsBookmarked ? "Remove bookmark" : "Bookmark this topic")">
-                    @(Model.IsBookmarked ? "🔖 Bookmarked" : "☆ Bookmark")
+                    @if (Model.IsBookmarked)
+                    {
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28" aria-hidden="true">
+                            <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                        </svg>
+                    }
+                    else
+                    {
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28" aria-hidden="true">
+                            <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                        </svg>
+                    }
                 </button>
+
+                @* ── Suggest a correction — opens Contact in new tab, pre-filled ── *@
+                <a href="/Contact?module=@Uri.EscapeDataString(Model.ModuleName)&lesson=@Uri.EscapeDataString(Model.LessonTitle)&topic=@Uri.EscapeDataString(Model.TopicTitle)"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="nav-icon-btn"
+                   title="Suggest a correction for this topic">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28" aria-hidden="true">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    </svg>
+                </a>
             </div>
 
             @if (Model.NextTopic != null)
             {
                 <a href="/Lesson/@Model.NextTopic.FileName" class="nav-btn next">
                     <span class="nav-text">
-                        <span class="nav-label">Next</span>
+                        <span class="nav-label">Next →</span>
                         <span class="nav-title">@Model.NextTopic.TopicTitle</span>
                     </span>
-                    <span class="nav-arrow">→</span>
                 </a>
             }
             else
@@ -159,9 +186,11 @@ else
             if (data.success) {
                 var nowBookmarked = data.isBookmarked;
                 btn.dataset.bookmarked = nowBookmarked ? 'true' : 'false';
-                btn.textContent   = nowBookmarked ? '🔖 Bookmarked' : '☆ Bookmark';
-                btn.className     = 'btn btn-bookmark' + (nowBookmarked ? ' btn-bookmark-active' : '');
-                btn.title         = nowBookmarked ? 'Remove bookmark' : 'Bookmark this topic';
+                btn.title = nowBookmarked ? 'Remove bookmark' : 'Bookmark this topic';
+                btn.classList.toggle('nav-icon-btn--bookmarked', nowBookmarked);
+                btn.innerHTML = nowBookmarked
+                    ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28" aria-hidden="true"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>'
+                    : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28" aria-hidden="true"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
             }
         } catch (e) {
             console.error('Bookmark toggle failed', e);
