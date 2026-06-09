@@ -1,0 +1,40 @@
+@page
+@model VexTrainerWeb.Pages.CurriculumModel
+@{
+    ViewData["Title"] = "VEX PROS Curriculum";
+    Layout = "_Layout";
+}
+
+<head>
+    <meta name="description"
+          content="Complete VEX Robotics PROS C++ programming curriculum — 70 modules and 654 topics covering hardware, driver control, sensors, PID control, odometry, path planning, and competition libraries OkapiLib, EZ-Template, and LemLib. Free for all VEX teams." />
+    <meta name="robots" content="index, follow" />
+</head>
+
+<div class="container">
+
+    <div class="page-header">
+        <h1>VEX PROS Curriculum</h1>
+        <p class="subtitle">
+            70 modules · 654 topics · from "what is a VEX Brain?" to competition-ready autonomous code
+        </p>
+    </div>
+
+    <div class="toc-toolbar">
+        <button class="btn btn-secondary btn-sm" onclick="toggleAll(true)">Expand All</button>
+        <button class="btn btn-secondary btn-sm" onclick="toggleAll(false)">Collapse All</button>
+    </div>
+
+    <div class="toc-container">
+        @Html.Raw(Model.TocHtml)
+    </div>
+
+</div>
+
+<script>
+function toggleAll(open) {
+    document.querySelectorAll('.toc-container details').forEach(function(el) {
+        el.open = open;
+    });
+}
+</script>

@@ -157,14 +157,16 @@ public class ContactModel : BasePage
     private async Task SendContactEmailAsync(string category, string message, string userEmail, string userName)
     {
         // Get email configuration from appsettings.json
-        var smtpHost = _configuration["Email:SmtpHost"];
-        var smtpPort = int.Parse(_configuration["Email:SmtpPort"] ?? "587");
-        var smtpUsername = _configuration["Email:SmtpUsername"];
-        var smtpPassword = _configuration["Email:SmtpPassword"];
-        var fromEmail = _configuration["Email:FromEmail"];
-        var toEmail = _configuration["Email:ContactFormRecipient"] ?? fromEmail;
+        // Key names match appsettings.json Email section
+        var smtpHost     = _configuration["Email:SmtpServer"];
+        var smtpPort     = int.Parse(_configuration["Email:SmtpPort"] ?? "25");
+        var enableSsl    = bool.Parse(_configuration["Email:EnableSsl"] ?? "false");
+        var fromEmail    = _configuration["Email:FromEmail"];
+        var fromPassword = _configuration["Email:FromPassword"];
+        var fromName     = _configuration["Email:FromName"] ?? "VexTrainer";
+        var toEmail      = _configuration["Email:FeedbackRecipient"] ?? fromEmail;
 
-        if (string.IsNullOrEmpty(smtpHost) || string.IsNullOrEmpty(smtpUsername))
+        if (string.IsNullOrEmpty(smtpHost) || string.IsNullOrEmpty(fromEmail))
         {
             Console.WriteLine("Email configuration not found. Logging message to console:");
             Console.WriteLine($"Category: {category}");
@@ -175,8 +177,8 @@ public class ContactModel : BasePage
 
         var mailMessage = new MailMessage
         {
-            From = new MailAddress(fromEmail ?? smtpUsername!, "VexTrainer Contact Form"),
-            Subject = $"VexTrainer Contact Form - {category}",
+            From = new MailAddress(fromEmail, fromName),
+            Subject = $"VexTrainer Contact Form - {category} | from {userEmail}",
             Body = $@"
 New contact form submission:
 
@@ -192,12 +194,11 @@ Message:
         };
 
         mailMessage.To.Add(toEmail!);
-        mailMessage.ReplyToList.Add(userEmail);
 
         using var smtpClient = new SmtpClient(smtpHost, smtpPort)
         {
-            EnableSsl = true,
-            Credentials = new NetworkCredential(smtpUsername, smtpPassword)
+            EnableSsl = enableSsl,
+            Credentials = new NetworkCredential(fromEmail, fromPassword)
         };
 
         await smtpClient.SendMailAsync(mailMessage);
