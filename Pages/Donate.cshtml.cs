@@ -1,13 +1,25 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace VexTrainerWeb.Pages;
 
 public class DonateModel : BasePage
 {
-    // Override to allow public access - no authentication required
-    protected override bool RequiresAuthentication { get { return false; } }
+    private readonly IWebHostEnvironment _env;
 
-    public void OnGet()
+    // Public page — no authentication required
+    protected override bool RequiresAuthentication => false;
+
+    public string DonateContent { get; private set; } = "";
+
+    public DonateModel(IWebHostEnvironment env) : base()
     {
-        // Simple page, no data needed
-        // Actual donations handled by PayPal or other third-party service
+        _env = env;
+    }
+
+    public async Task OnGetAsync()
+    {
+        var path = Path.Combine(_env.WebRootPath, "content", "donate.html");
+        if (System.IO.File.Exists(path))
+            DonateContent = await System.IO.File.ReadAllTextAsync(path);
     }
 }
