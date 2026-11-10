@@ -1,19 +1,31 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
+using VexTrainer.Data.Services;
+using VexTrainerWeb.Services;
 
 namespace VexTrainerWeb.Pages;
 
 public class ContactModel : BasePage
 {
     private readonly IConfiguration _configuration;
+    private readonly TurnstileService _turnstile;
+    private readonly TurnstileSettings _turnstileSettings;
+    private readonly ILogger<ContactModel> _logger;
 
     // Override to allow public access - no authentication required
     protected override bool RequiresAuthentication { get { return false; } }
 
-    public ContactModel(IConfiguration configuration)
+    public ContactModel(
+        IConfiguration configuration,
+        TurnstileService turnstile,
+        TurnstileSettings turnstileSettings,
+        ILogger<ContactModel> logger)
     {
         _configuration = configuration;
+        _turnstile = turnstile;
+        _turnstileSettings = turnstileSettings;
+        _logger = logger;
     }
 
     [BindProperty]
@@ -112,6 +124,25 @@ public class ContactModel : BasePage
         {
             ErrorMessage = "Message is too short. Please provide more detail.";
             return Page();
+        }
+
+        // Anti-spam measure 3: Cloudflare Turnstile. Verified here (not via the
+        // API) because this page sends the email itself. Checked after the
+        // field validation so a validation error doesn't burn the token.
+        if (_turnstileSettings.IsActive(_turnstile))
+        {
+            var captcha = await _turnstile.VerifyAsync(
+                Request.Form[TurnstileService.FormFieldName].ToString(),
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                HttpContext.RequestAborted);
+
+            if (!captcha.Success)
+            {
+                _logger.LogWarning("Contact form Turnstile verification failed: {Errors}",
+                    string.Join(",", captcha.ErrorCodes));
+                ErrorMessage = TurnstileService.FailedMessage;
+                return Page();
+            }
         }
 
         try

@@ -7,13 +7,19 @@ namespace VexTrainerWeb.Pages.Auth;
 
 public class RegisterModel : BasePage {
   private readonly ApiClient _apiClient;
+  private readonly TurnstileService _turnstile;
+  private readonly TurnstileSettings _turnstileSettings;
 
   public RegisterModel(
       AuthService authService,
       LessonService lessonService,
-      ApiClient apiClient)
+      ApiClient apiClient,
+      TurnstileService turnstile,
+      TurnstileSettings turnstileSettings)
       : base(authService, lessonService) {
     _apiClient = apiClient;
+    _turnstile = turnstile;
+    _turnstileSettings = turnstileSettings;
   }
 
   protected override bool RequiresAuthentication => false;
@@ -43,9 +49,13 @@ public class RegisterModel : BasePage {
   public bool AgreeToTerms { get; set; }
 
   public string ErrorMessage { get; set; } = "";
-  public string SuccessMessage { get; set; } = "";
 
   public void OnGet(string? email) {
+    if (TempData[RegisteredEmailKey] is string registeredEmail) {
+      Registered = true;
+      RegisteredEmail = registeredEmail;
+      return;
+    }
     if (!string.IsNullOrEmpty(email)) Email = email;
   }
 
@@ -61,6 +71,18 @@ public class RegisterModel : BasePage {
       return Page();
     }
 
+    // CAPTCHA: the website always requires the Turnstile token (when configured)
+    // and forwards it to the API, which verifies it with Cloudflare. A token
+    // can only be verified once, so it is not verified here as well.
+    string? captchaToken = null;
+    if (_turnstileSettings.IsActive(_turnstile)) {
+      captchaToken = Request.Form[TurnstileService.FormFieldName].ToString();
+      if (string.IsNullOrWhiteSpace(captchaToken)) {
+        ErrorMessage = "Please complete the security check.";
+        return Page();
+      }
+    }
+
     // Delegate registration + token generation + confirmation email to the API
     var result = await _apiClient.PostAsync<object>(
         "Auth/register",
@@ -68,7 +90,8 @@ public class RegisterModel : BasePage {
           userName = FullName,
           email = Email,
           phone = (string?)null,
-          password = Password
+          password = Password,
+          captchaToken
         }
     );
 
@@ -77,18 +100,18 @@ public class RegisterModel : BasePage {
       return Page();
     }
 
-    SuccessMessage = "Registration successful! Please check your email to confirm your account. " +
-                     "The confirmation link expires in 24 hours.";
-
-    // Clear form
-    FullName = "";
-    Email = "";
-    Password = "";
-    ConfirmPassword = "";
-    AgreeToTerms = false;
-
-    return Page();
+    // Post/Redirect/Get: show the confirmation on a fresh GET so the form (and
+    // the Turnstile widget) is not rendered again, posted values are not
+    // re-filled, and a browser refresh cannot resubmit the registration.
+    TempData[RegisteredEmailKey] = Email.Trim();
+    return RedirectToPage();
   }
+
+  private const string RegisteredEmailKey = "RegisteredEmail";
+
+  /// <summary>True on the GET that follows a successful registration.</summary>
+  public bool Registered { get; private set; }
+  public string RegisteredEmail { get; private set; } = "";
 
   private static bool IsStrongPassword(string password) {
     if (password.Length < 8) return false;

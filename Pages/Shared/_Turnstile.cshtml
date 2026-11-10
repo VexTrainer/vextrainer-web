@@ -1,0 +1,14 @@
+@* Cloudflare Turnstile widget. Place inside a <form>; the widget adds a hidden
+   "cf-turnstile-response" field to that form. Renders nothing until both
+   Turnstile__SiteKey and Turnstile__SecretKey are configured. *@
+@using VexTrainer.Data.Services
+@using VexTrainerWeb.Services
+@inject TurnstileSettings TurnstileSettings
+@inject TurnstileService TurnstileService
+@if (TurnstileSettings.IsActive(TurnstileService))
+{
+    <div class="form-group turnstile-group">
+        <div class="cf-turnstile" data-sitekey="@TurnstileSettings.SiteKey" data-size="flexible"></div>
+    </div>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+}

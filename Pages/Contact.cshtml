@@ -63,6 +63,9 @@
                 <span class="field-validation-error" id="messageError"></span>
             </div>
 
+            <!-- CAPTCHA (renders only when Turnstile keys are configured) -->
+            <partial name="_Turnstile" />
+
             <!-- Submit Button -->
             <div class="form-group">
                 <button type="submit" class="btn-primary" id="submitBtn">

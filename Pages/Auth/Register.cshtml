@@ -5,43 +5,67 @@
     Layout = "_Layout";
 }
 
+@if (Model.Registered)
+{
+    @* Shown after a successful registration (Post/Redirect/Get). No form and no
+       Turnstile widget here, so an idle page makes no further Cloudflare calls. *@
+    <div class="form-container">
+        <h2>Check Your Email</h2>
+        <div class="alert alert-success mt-20">
+            <p style="margin-top:0;"><strong>Registration successful!</strong></p>
+            <p>We've sent a confirmation link to <strong>@Model.RegisteredEmail</strong>.
+               Click the link in that email to activate your account, then sign in.</p>
+            <p style="margin-bottom:0;">The link expires in 24 hours. If you don't see the email,
+               check your spam or junk folder.</p>
+        </div>
+        <div class="text-center mt-30">
+            <a href="/Auth/SignIn" class="btn btn-primary btn-block" id="goToSignIn">Go to Sign In</a>
+            <p class="help-text mt-20" id="redirectNotice">
+                Taking you to the sign-in page in <span id="redirectCountdown">15</span> seconds...
+            </p>
+        </div>
+    </div>
+
+}
+else
+{
 <div class="form-container">
     <h2>Create Your Free Account</h2>
-    
+
     <form id="registerForm" method="post">
         <!-- Full Name Field -->
         <div class="form-group floating-label">
-            <input type="text" 
-                   id="fullName" 
-                   name="FullName" 
+            <input type="text"
+                   id="fullName"
+                   name="FullName"
                    asp-for="FullName"
-                   required 
+                   required
                    autocomplete="name"
                    placeholder=" " />
             <label for="fullName">Full Name (FirstName LastName)</label>
             <span class="error-message" id="fullNameError" asp-validation-for="FullName"></span>
         </div>
-        
+
         <!-- Email Field (pre-filled if coming from sign-in) -->
         <div class="form-group floating-label">
-            <input type="email" 
-                   id="email" 
-                   name="Email" 
+            <input type="email"
+                   id="email"
+                   name="Email"
                    asp-for="Email"
-                   required 
+                   required
                    autocomplete="email"
                    placeholder=" " />
             <label for="email">Email</label>
             <span class="error-message" id="emailError" asp-validation-for="Email"></span>
         </div>
-        
+
         <!-- Password Field -->
         <div class="form-group floating-label">
-            <input type="password" 
-                   id="password" 
+            <input type="password"
+                   id="password"
                    name="Password"
                    asp-for="Password"
-                   minlength="8" 
+                   minlength="8"
                    autocomplete="new-password"
                    placeholder=" " />
             <label for="password">Password</label>
@@ -54,11 +78,11 @@
 
         <!-- Confirm Password Field -->
         <div class="form-group floating-label">
-            <input type="password" 
-                   id="confirmPassword" 
+            <input type="password"
+                   id="confirmPassword"
                    name="ConfirmPassword"
                    asp-for="ConfirmPassword"
-                   minlength="8" 
+                   minlength="8"
                    autocomplete="new-password"
                    placeholder=" " />
             <label for="confirmPassword">Confirm Password</label>
@@ -71,34 +95,30 @@
         <!-- Terms Agreement -->
         <div class="form-group">
             <label style="display: flex; align-items: start; gap: 10px; cursor: pointer;">
-                <input type="checkbox" 
+                <input type="checkbox"
                        name="AgreeToTerms"
                        asp-for="AgreeToTerms"
-                       required 
+                       required
                        style="margin-top: 4px;" />
                 <span>I agree to the <a href="/Static/Privacy" target="_blank">Terms of Service and Privacy Policy</a></span>
             </label>
             <span class="error-message" asp-validation-for="AgreeToTerms"></span>
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-block" id="registerButton">Create Account</button>
-        
+        <!-- CAPTCHA (renders only when Turnstile keys are configured) -->
+        <partial name="_Turnstile" />
+
+        <!-- Submit Button: enabled only when every field is valid and the passwords match -->
+        <button type="submit" class="btn btn-primary btn-block" id="registerButton" disabled>Create Account</button>
+
         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
         {
             <div class="alert alert-error mt-20">
                 @Model.ErrorMessage
             </div>
         }
-        
-        @if (!string.IsNullOrEmpty(Model.SuccessMessage))
-        {
-            <div class="alert alert-success mt-20">
-                @Model.SuccessMessage
-            </div>
-        }
     </form>
-    
+
     <!-- Sign In Link -->
     <div class="text-center mt-30">
         <button type="button" class="btn btn-secondary btn-block" onclick="window.location.href='/Auth/SignIn'">
@@ -106,23 +126,69 @@
         </button>
     </div>
 </div>
+}
 
 @section Scripts {
+@if (Model.Registered)
+{
+<script>
+    (function () {
+        let seconds = 15;
+        const countdown = document.getElementById('redirectCountdown');
+        const timer = setInterval(function () {
+            seconds--;
+            if (countdown) countdown.textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = '/Auth/SignIn';
+            }
+        }, 1000);
+    })();
+    </script>
+}
+else
+{
 <script>
 // Initialize Register page
 VexTrainer.Register.init();
 
-// Add loading state to register button
 const registerForm = document.getElementById('registerForm');
 const registerButton = document.getElementById('registerButton');
 
 if (registerForm && registerButton) {
+    // Keep the button disabled until name, email, password, a matching
+    // confirm password and the terms checkbox are all valid.
+    const isPasswordStrong = function (p) {
+        return p.length >= 8 && /[A-Z]/.test(p) && /[a-z]/.test(p) &&
+               /[0-9]/.test(p) && /[!@@#$%^&*]/.test(p);
+    };
+    const updateRegisterButton = function () {
+        const name = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email');
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        const terms = registerForm.querySelector('input[type="checkbox"][name="AgreeToTerms"]');
+        registerButton.disabled = !(
+            name.length >= 2 &&
+            email.value.trim() !== '' && email.checkValidity() &&
+            isPasswordStrong(password) &&
+            confirm !== '' && confirm === password &&
+            terms && terms.checked
+        );
+    };
+    registerForm.addEventListener('input', updateRegisterButton);
+    registerForm.addEventListener('change', updateRegisterButton);
+    updateRegisterButton();   // also covers browser autofill on load / back navigation
+    setTimeout(updateRegisterButton, 500);
+
+    // Loading state while the request is in flight
     registerForm.addEventListener('submit', function(e) {
-        if (this.checkValidity()) {
+        if (!e.defaultPrevented && this.checkValidity()) {
             registerButton.disabled = true;
             registerButton.textContent = 'Registering & Sending confirmation email...';
         }
     });
 }
 </script>
+}
 }

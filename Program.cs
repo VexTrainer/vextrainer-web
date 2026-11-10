@@ -36,6 +36,17 @@ builder.Services.AddHttpClient<ApiClient>(client => {
   client.Timeout = TimeSpan.FromSeconds(30);
 });
 
+// Cloudflare Turnstile (CAPTCHA) on the Register and Contact pages.
+// The widget is shown only when BOTH keys are configured (web.config env vars
+// Turnstile__SiteKey and Turnstile__SecretKey), so the site works unchanged
+// until they are set. Register forwards the token to the API (which verifies
+// it); Contact verifies it here because that page never calls the API.
+builder.Services.AddHttpClient(nameof(TurnstileService), c => c.Timeout = TimeSpan.FromSeconds(10));
+builder.Services.AddScoped(sp => new TurnstileService(
+    sp.GetRequiredService<IHttpClientFactory>().CreateClient(nameof(TurnstileService)),
+    builder.Configuration["Turnstile:SecretKey"]));
+builder.Services.AddSingleton(new TurnstileSettings(builder.Configuration["Turnstile:SiteKey"]));
+
 // Add Cookie Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
